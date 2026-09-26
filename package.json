@@ -1,7 +1,7 @@
 {
 	"name": "omnicade-site",
 	"private": true,
-	"version": "1.1.0",
+	"version": "1.2.0",
 	"type": "module",
 	"scripts": {
 		"dev": "vite dev",
@@ -10,8 +10,10 @@
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"prepare": "svelte-kit sync || echo ''"
 	},
+	"dependencies": {
+		"@sveltejs/adapter-node": "^5.2.12"
+	},
 	"devDependencies": {
-		"@sveltejs/adapter-static": "^3.0.8",
 		"@sveltejs/kit": "^2.22.0",
 		"@sveltejs/vite-plugin-svelte": "^6.0.0",
 		"svelte": "^5.0.0",

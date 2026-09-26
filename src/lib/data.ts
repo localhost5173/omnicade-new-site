@@ -245,5 +245,6 @@ export const navLinks: [string, string][] = [
 	['The session', '#session'],
 	['Pricing', '#pricing'],
 	['Operators', '#operators'],
-	['Under the hood', '#tech']
+	['Under the hood', '#tech'],
+	['Your minutes', '/account']
 ];

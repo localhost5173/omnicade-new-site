@@ -1,5 +1,5 @@
 {
-  description = "omnicade.dev — marketing site (SvelteKit 5 + TypeScript)";
+  description = "omnicade.eu — the player website (SvelteKit 5 + TypeScript, adapter-node)";
 
   inputs.nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
 
@@ -26,7 +26,7 @@
   in rec {
     packages.${system}.default = pkgs.stdenv.mkDerivation (finalAttrs: {
       pname = "omnicade-site";
-      version = "1.1.0";
+      version = "1.2.0";
 
       inherit src;
 
@@ -39,7 +39,9 @@
       pnpmDeps = pkgs.fetchPnpmDeps {
         inherit (finalAttrs) pname version src;
         fetcherVersion = 4;
-        hash = "sha256-XM/NzFz5RGbgzd8bubovwKRvYdriYJyaPv9JuujYu+o=";
+        # PR note: bumped for adapter-node + the player pages. When this
+        # hash goes stale, paste the `got:` from the build error here.
+        hash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
       };
 
       buildPhase = ''
@@ -48,10 +50,15 @@
         runHook postBuild
       '';
 
+      # adapter-node output: `node build` runs it, with the site's
+      # node_modules alongside (the runtime's express-like deps ride
+      # there; see the Dockerfile for the container shape of the same).
       installPhase = ''
         runHook preInstall
-        mkdir -p $out/share
-        cp -r build $out/share/omnicade-site
+        mkdir -p $out/share/omnicade-site
+        cp -r build $out/share/omnicade-site/
+        cp -r node_modules $out/share/omnicade-site/
+        cp package.json $out/share/omnicade-site/
         runHook postInstall
       '';
     });
@@ -62,10 +69,14 @@
         type = "app";
         program = lib.getExe (pkgs.writeShellApplication {
           name = "omnicade-site-serve";
+          runtimeInputs = [
+            pkgs.nodejs
+          ];
           text = ''
             echo "omnicade-site → http://localhost:8123  (Ctrl-C to stop)"
-            exec ${pkgs.python3}/bin/python3 -m http.server 8123 \
-              -d ${packages.${system}.default}/share/omnicade-site
+            echo "server-side pages need API_BASE_URL pointing at omnicade-api"
+            exec node ${packages.${system}.default}/share/omnicade-site/build \
+              --host 0.0.0.0 --port 8123
           '';
         });
       };
