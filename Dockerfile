@@ -8,7 +8,14 @@ WORKDIR /app
 RUN apk add --no-cache libc6-compat
 
 # Copy package files (pnpm, not npm)
+# Copy package files (pnpm, not npm)
 COPY package.json pnpm-lock.yaml ./
+
+# Allow esbuild's install script to run (pnpm 10+ blocks it by default)
+RUN echo "only-built-dependencies[]=esbuild" >> .npmrc
+
+# Enable pnpm via corepack and install dependencies
+RUN corepack enable && pnpm install --frozen-lockfile
 
 # Enable pnpm via corepack and install dependencies
 RUN corepack enable && pnpm install --frozen-lockfile
