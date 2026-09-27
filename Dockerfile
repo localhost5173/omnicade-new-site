@@ -7,17 +7,17 @@ WORKDIR /app
 # Install dependencies needed for building native modules
 RUN apk add --no-cache libc6-compat
 
-# Copy package files
-COPY package.json package-lock.json ./
+# Copy package files (pnpm, not npm)
+COPY package.json pnpm-lock.yaml ./
 
-# Install dependencies
-RUN npm ci
+# Enable pnpm via corepack and install dependencies
+RUN corepack enable && pnpm install --frozen-lockfile
 
 # Copy application files
 COPY . .
 
 # Build the application (requires @sveltejs/adapter-node in svelte.config.js)
-RUN npm run build
+RUN pnpm run build
 
 # Production stage
 FROM node:24-alpine AS runner
@@ -46,15 +46,10 @@ LABEL traefik.enable="true" \
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 sveltekit
 
-# Copy package files
-COPY package.json package-lock.json ./
-
-# Install only production dependencies
-RUN npm ci --only=production && npm cache clean --force
-
-# Copy built application from builder stage
-# adapter-node outputs a self-contained server into ./build
+# Copy built application + pruned node_modules from builder stage
 COPY --from=builder --chown=sveltekit:nodejs /app/build ./build
+COPY --from=builder --chown=sveltekit:nodejs /app/node_modules ./node_modules
+COPY --from=builder --chown=sveltekit:nodejs /app/package.json ./package.json
 
 # Switch to non-root user
 USER sveltekit
@@ -71,4 +66,4 @@ ENV HOST=0.0.0.0
 ENV ORIGIN=https://localhost
 
 # Start the application
-CMD ["dumb-init", "node", "build/index.js"]
+CMD ["dumb-init", "node", "build"]
