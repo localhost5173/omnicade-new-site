@@ -6,9 +6,8 @@ WORKDIR /app
 
 # Install dependencies needed for building native modules
 RUN apk add --no-cache libc6-compat
-
 # Copy package files (pnpm, not npm)
-COPY package.json pnpm-lock.yaml ./
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 
 # Enable pnpm via corepack and install dependencies
 RUN corepack enable && pnpm install --frozen-lockfile
