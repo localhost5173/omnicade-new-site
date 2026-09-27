@@ -12,6 +12,12 @@ export const load: PageServerLoad = async ({ cookies, url }) => {
 	const preview = await api<{ seconds: number; arcade_name: string; expires_at: string }>(
 		`/claim/${encodeURIComponent(code)}/preview`
 	);
+	if (preview.status === 0) {
+		// The api is unreachable from the site: not the code's fault, and
+		// saying "invalid" would send the player back to the cabinet for
+		// nothing.
+		return { code, preview: null, unreachable: true };
+	}
 	if (!preview.ok || !preview.data) {
 		return { code, preview: null, dead: true };
 	}
