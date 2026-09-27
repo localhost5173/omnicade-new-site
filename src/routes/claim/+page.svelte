@@ -19,6 +19,9 @@
 		{:else if form?.error}
 			<div class="banner err">{form.error}</div>
 			<a class="walk" href="/">Back to omnicade.eu</a>
+		{:else if data?.unreachable}
+			<div class="banner err">Can't reach the arcade service right now — your code is fine, try again in a moment.</div>
+			<a class="walk" href="/">Back to omnicade.eu</a>
 		{:else if data?.dead}
 			<div class="banner err">This code is invalid or has expired. Quitting a session early always mints a fresh one on the cabinet's thanks screen.</div>
 			<a class="walk" href="/">Back to omnicade.eu</a>

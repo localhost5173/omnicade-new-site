@@ -9,7 +9,10 @@
 	</div>
 
 	<div class="card" style="max-width:480px;margin:0 auto;padding:28px;text-align:center">
-		{#if !data?.machine}
+		{#if data?.unreachable}
+			<div class="banner err">Can't reach the arcade service right now — the cabinet may be fine, try again in a moment.</div>
+			<a class="walk" href="/">Back to omnicade.eu</a>
+		{:else if !data?.machine}
 			<div class="banner err">No cabinet answers to this code.</div>
 			<a class="walk" href="/">Back to omnicade.eu</a>
 		{:else if form?.success}

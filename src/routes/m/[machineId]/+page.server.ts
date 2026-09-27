@@ -10,6 +10,10 @@ export const load: PageServerLoad = async ({ cookies, params }) => {
 	const machine = await api<{ machine_id: string; arcade_name: string; online: boolean }>(
 		`/machines/${encodeURIComponent(params.machineId)}/public`
 	);
+	if (machine.status === 0) {
+		// The api is unreachable from the site: the cabinet may be fine.
+		return { machine: null, unreachable: true };
+	}
 	if (!machine.ok || !machine.data) {
 		return { machine: null };
 	}
