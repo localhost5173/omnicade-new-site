@@ -27,27 +27,7 @@
 <Nav />
 
 <main>
-	<Hero />
-	<Marquee
-		items={[
-			'STREET FIGHTER 6',
-			'PAC-MAN',
-			'200+ EMULATOR CORES',
-			'SONIC',
-			'TEKKEN 8',
-			'METAL SLUG',
-			'GUILTY GEAR STRIVE',
-			'MORTAL KOMBAT',
-			'ROCKET LEAGUE',
-			'STREET FIGHTER II'
-		]}
-	/>
-	<Platform />
-	<Machines />
-	<Session />
-	<Pricing />
-	<Operators />
-	<Tech />
+	Omnicade website WIP
 </main>
 
 <Footer />
