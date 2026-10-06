@@ -20,7 +20,7 @@
 		</div>
 
 		<p class="legal">
-			© {new Date().getFullYear()} Omnicade · Built with the same engine that runs the cabinets.
+			© {new Date().getFullYear()} Omnicade
 		</p>
 	</div>
 </footer>
