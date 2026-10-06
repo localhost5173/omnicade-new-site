@@ -41,7 +41,7 @@
         fetcherVersion = 4;
         # PR note: bumped for adapter-node + the player pages. When this
         # hash goes stale, paste the `got:` from the build error here.
-        hash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
+        hash = "sha256-ta9SzQFL+GYzwDDodoP6XSbP1uHD4BITaxHBwQdrOSk=";
       };
 
       buildPhase = ''
@@ -75,8 +75,9 @@
           text = ''
             echo "omnicade-site → http://localhost:8123  (Ctrl-C to stop)"
             echo "server-side pages need API_BASE_URL pointing at omnicade-api"
-            exec node ${packages.${system}.default}/share/omnicade-site/build \
-              --host 0.0.0.0 --port 8123
+            # adapter-node reads HOST/PORT from the environment (see the
+            # Dockerfile), not from CLI flags
+            HOST=0.0.0.0 PORT=8123 exec node ${packages.${system}.default}/share/omnicade-site/build
           '';
         });
       };
