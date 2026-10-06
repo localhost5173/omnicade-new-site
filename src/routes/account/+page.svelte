@@ -69,7 +69,7 @@
 							</td>
 						</tr>
 					{:else}
-						<tr><td style="padding:14px 16px;color:var(--dim)">Nothing yet — play a session and quit early to bank minutes here.</td></tr>
+						<tr><td style="padding:14px 16px;color:var(--dim)">Nothing yet. Play a session and quit early to bank minutes here.</td></tr>
 					{/each}
 				</tbody>
 			</table>

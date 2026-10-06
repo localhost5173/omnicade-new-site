@@ -1,5 +1,4 @@
 <script lang="ts">
-	import SessionDemo from './SessionDemo.svelte';
 	import { sessionSteps } from '$lib/data';
 </script>
 
@@ -10,44 +9,32 @@
 				<p class="eyebrow">From coin-up to credits</p>
 				<h2 class="h2">A SESSION, <span class="gold">FRAME BY FRAME</span></h2>
 				<p class="lede">
-					This is the exact flow every Omnicade runs — try it. The demo plays at seconds; the real
+					This is the exact flow every Omnicade runs. The demo above plays at seconds; the real
 					cabinet plays at minutes.
 				</p>
 			</div>
 		</div>
 
-		<div class="grid">
-			<ol class="steps">
-				{#each sessionSteps as s (s.n)}
-					<li>
-						<span class="n">{s.n}</span>
-						<div>
-							<h3>{s.title}</h3>
-							<p>{s.body}</p>
-						</div>
-					</li>
-				{/each}
-			</ol>
-
-			<div class="demo-col">
-				<SessionDemo />
-			</div>
-		</div>
+		<ol class="steps">
+			{#each sessionSteps as s (s.n)}
+				<li>
+					<span class="n">{s.n}</span>
+					<div>
+						<h3>{s.title}</h3>
+						<p>{s.body}</p>
+					</div>
+				</li>
+			{/each}
+		</ol>
 	</div>
 </section>
 
 <style>
-	.grid {
-		display: grid;
-		grid-template-columns: 1fr 1fr;
-		gap: 56px;
-		align-items: start;
-	}
-
 	.steps {
 		list-style: none;
 		display: grid;
 		gap: 0;
+		max-width: 640px;
 	}
 
 	.steps li {
@@ -101,18 +88,9 @@
 		max-width: 44ch;
 	}
 
-	.demo-col {
-		position: sticky;
-		top: 100px;
-	}
-
 	@media (max-width: 960px) {
-		.grid {
-			grid-template-columns: 1fr;
-		}
-
-		.demo-col {
-			position: static;
+		.steps {
+			max-width: none;
 		}
 	}
 </style>

@@ -7,13 +7,13 @@
 	<div class="sec-head">
 		<p class="eyebrow">Omnicade players</p>
 		<h2 class="h2">LOG <span class="gold">IN</span></h2>
-		<p class="lede">Your stored minutes live here — check the balance, claim a cabinet code, keep what you paid for.</p>
+		<p class="lede">Your stored minutes live here: check the balance, claim a cabinet code, keep what you paid for.</p>
 	</div>
 
 	<div class="card" style="max-width:440px;margin:0 auto;padding:26px">
 		{#if form?.emailNotVerified}
 			<div class="banner err">
-				Confirm your email first — check the link we sent
+				Confirm your email first: check the link we sent
 				{#if form?.email}
 					to <strong>{form.email}</strong>. It may take a minute; resend it from the mail's "didn't arrive" hint on
 					<a href="/verify">the verify page</a>.
@@ -22,7 +22,7 @@
 		{:else if form?.error}
 			<div class="banner err">{form.error}</div>
 		{:else if resetDone}
-			<div class="banner ok">Password updated — log in with the new one.</div>
+			<div class="banner ok">Password updated. Log in with the new one.</div>
 		{/if}
 
 		<form method="POST">

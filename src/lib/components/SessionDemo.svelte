@@ -3,11 +3,12 @@
 	import type { Tier, Topup } from '$lib/data';
 
 	// The cabinet's session flow, shrunk to demo speed:
-	// attract → tiers → pay → countdown → running → extend/over.
-	// (On the real cabinet the same states run at full minutes — the
+	// attract → game → tiers → pay → countdown → running → extend/over.
+	// (On the real cabinet the same states run at full minutes; the
 	// engine has a play-time divider exactly for demos like this.)
 	const PHASE = {
 		ATTRACT: 'attract',
+		GAME: 'game',
 		TIERS: 'tiers',
 		PAY: 'pay',
 		COUNTDOWN: 'countdown',
@@ -18,17 +19,27 @@
 
 	type Phase = (typeof PHASE)[keyof typeof PHASE];
 
+	// the demo library; a real cabinet syncs its Steam titles over the api
+	const GAMES = ['STREET FIGHTER 6', 'STICKMAN FIGHT', 'BRAWLHALLA', 'RIVALS OF AETHER'];
+
 	let phase = $state<Phase>(PHASE.ATTRACT);
 	let remaining = $state(0); // demo seconds
 	let grace = $state(0); // extend-screen grace, demo seconds
 	let count = $state(3); // 3-2-1
 	let chosen = $state<Tier | null>(null); // tier picked
+	let game = $state<string | null>(null); // game picked
 
 	const total = $derived(chosen ? chosen.minutes : 0);
 	const pct = $derived(total > 0 ? Math.max(0, remaining) / total : 0);
 	const lowTime = $derived(phase === PHASE.RUNNING && remaining <= 5);
 
-	function tapCard() {
+	function tapAny() {
+		// attract mode: any button (here: the screen itself) wakes the cabinet
+		phase = PHASE.GAME;
+	}
+
+	function pickGame(g: string) {
+		game = g;
 		phase = PHASE.TIERS;
 	}
 
@@ -49,6 +60,7 @@
 	function reset() {
 		phase = PHASE.ATTRACT;
 		chosen = null;
+		game = null;
 		remaining = 0;
 		grace = 0;
 		count = 3;
@@ -101,15 +113,26 @@
 		<span class="dot"></span>
 		<span class="dot"></span>
 		<span class="dot"></span>
-		<span class="title">OMNICADE — LIVE DEMO</span>
+		<span class="title">OMNICADE · LIVE DEMO</span>
 	</div>
 
 	<div class="screen" class:low={lowTime}>
 		{#if phase === PHASE.ATTRACT}
-			<div class="pane attract">
-				<p class="k">ATTRACT MODE</p>
-				<p class="big press">TAP CARD TO START</p>
-				<button class="btn btn-gold small" onclick={tapCard}>▶ Tap card</button>
+			<button class="pane attract" onclick={tapAny}>
+				<img class="attract-logo" src="/logo.jpg" alt="" aria-hidden="true" />
+				<p class="big press">TAP ANY BUTTON TO PLAY</p>
+				<p class="hint">this window counts as a button</p>
+			</button>
+		{:else if phase === PHASE.GAME}
+			<div class="pane">
+				<p class="k">PICK YOUR GAME</p>
+				<div class="gamegrid">
+					{#each GAMES as g (g)}
+						<button class="tier" onclick={() => pickGame(g)}>
+							<strong>{g}</strong>
+						</button>
+					{/each}
+				</div>
 			</div>
 		{:else if phase === PHASE.TIERS}
 			<div class="pane">
@@ -123,11 +146,11 @@
 						</button>
 					{/each}
 				</div>
-				<p class="hint">demo prices — real cabinet, real card reader</p>
+				<p class="hint">demo prices, real cabinet, real card reader</p>
 			</div>
 		{:else if phase === PHASE.PAY}
 			<div class="pane">
-				<p class="k">PRESENT CARD</p>
+				<p class="k">TAP CARD</p>
 				<div class="spinner" aria-hidden="true"></div>
 				<p class="hint">waiting for the payment server… (auto-approves, like the cabinet's test mode)</p>
 			</div>
@@ -141,20 +164,23 @@
 			</div>
 		{:else if phase === PHASE.RUNNING}
 			<div class="pane running">
+				{#if game}
+					<p class="now">NOW PLAYING · {game}</p>
+				{/if}
 				<div class="clock" class:warn={remaining <= 5}>
 					<span class="t">{mmss(remaining)}</span>
 					<span class="lbl">SESSION TIME</span>
 				</div>
 				<div class="bar"><span style="width: {pct * 100}%"></span></div>
 				{#if lowTime}
-					<p class="toast">⚠ LOW TIME — TAP CARD TO ADD MORE</p>
+					<p class="toast">⚠ LOW TIME · TAP CARD TO ADD MORE</p>
 				{:else}
 					<p class="hint">the real cabinet floats this timer over the live game, in the corner</p>
 				{/if}
 			</div>
 		{:else if phase === PHASE.EXTEND}
 			<div class="pane">
-				<p class="k danger">GAME PAUSED — MID-FRAME</p>
+				<p class="k danger">GAME PAUSED, MID-FRAME</p>
 				<div class="tiergrid small">
 					{#each topups as t (t.minutes)}
 						<button class="tier" onclick={() => extend(t)}>
@@ -170,7 +196,7 @@
 			<div class="pane">
 				<p class="k">SESSION OVER</p>
 				<p class="big">TIME SAVED ✓</p>
-				<p class="hint">your remaining time is on your card — tap any Omnicade to continue</p>
+				<p class="hint">your remaining time is on your card, tap any Omnicade to continue</p>
 			</div>
 		{/if}
 		<div class="scan"></div>
@@ -256,6 +282,25 @@
 		animation: fadein 0.35s ease both;
 	}
 
+	.pane.attract {
+		border: none;
+		background: transparent;
+		color: inherit;
+		font: inherit;
+		cursor: pointer;
+		width: 100%;
+		/* no fade-in: its stacking context would trap the logo's
+		   mix-blend-mode and the jpg's black box would show */
+		animation: none;
+	}
+
+	.attract-logo {
+		width: 190px;
+		height: auto;
+		/* the jpg's pure-black box disappears into the screen's near-black bg */
+		mix-blend-mode: lighten;
+	}
+
 	@keyframes fadein {
 		from {
 			opacity: 0;
@@ -301,15 +346,18 @@
 		animation: blink 1.3s steps(1) infinite;
 	}
 
-	.small {
-		padding: 10px 18px;
-		font-size: 13px;
-	}
-
 	.hint {
 		font-size: 12px;
 		color: var(--dim);
 		max-width: 34ch;
+	}
+
+	.gamegrid {
+		display: grid;
+		grid-template-columns: repeat(2, 1fr);
+		gap: 10px;
+		width: 100%;
+		max-width: 400px;
 	}
 
 	.tiergrid {
@@ -402,6 +450,13 @@
 			transform: scale(1);
 			opacity: 1;
 		}
+	}
+
+	.now {
+		font-family: var(--pixel);
+		font-size: 7.5px;
+		letter-spacing: 0.16em;
+		color: var(--dim);
 	}
 
 	.clock {

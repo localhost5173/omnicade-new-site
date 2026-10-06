@@ -1,5 +1,5 @@
 <script lang="ts">
-	import CabinetMock from './CabinetMock.svelte';
+	import SessionDemo from './SessionDemo.svelte';
 	import { stats } from '$lib/data';
 </script>
 
@@ -11,18 +11,17 @@
 		<div class="copy">
 			<p class="eyebrow">The arcade machine company</p>
 			<h1 class="h1">
-				EVERY GAME EVER.<br />
+				REAL STEAM GAMES.<br />
 				<span class="gold">ONE CABINET.</span>
 			</h1>
 			<p class="lede">
-				Omnicade builds arcade machines that run <strong>virtually any game</strong> — 8-bit
-				classics, 16-bit legends and today's biggest Steam titles — behind a single glowing
-				screen. Tap a card, pick your time, play.
+				Omnicade builds arcade machines around today's <strong>biggest Steam titles</strong>,
+				pre-launched and waiting behind a single glowing screen. Tap a card, pick your time,
+				play.
 			</p>
 
 			<div class="actions">
-				<a class="btn btn-gold" href="#machines">See the machines</a>
-				<a class="btn btn-ghost" href="#session">How a session works</a>
+				<a class="btn btn-gold" href="#session">How a session works</a>
 			</div>
 
 			<dl class="stats">
@@ -33,17 +32,22 @@
 					</div>
 				{/each}
 			</dl>
+
+			<p class="legal">
+				✓ Every title on the cabinet is <strong>commercially licensed</strong>, so charging for
+				play is fully legal.
+			</p>
 		</div>
 
 		<div class="visual">
-			<CabinetMock />
+			<SessionDemo />
 		</div>
 	</div>
 </section>
 
 <style>
 	.hero {
-		padding: 168px 0 96px;
+		padding: 96px 0 96px;
 		overflow: hidden;
 	}
 
@@ -100,7 +104,7 @@
 
 	.stats {
 		display: grid;
-		grid-template-columns: repeat(4, auto);
+		grid-template-columns: repeat(2, auto);
 		gap: 34px;
 		margin-top: 52px;
 		justify-content: start;
@@ -120,9 +124,19 @@
 		margin-top: 2px;
 	}
 
+	.legal {
+		margin-top: 26px;
+		font-size: 13.5px;
+		color: var(--dim);
+	}
+
+	.legal strong {
+		color: var(--text);
+	}
+
 	@media (max-width: 960px) {
 		.hero {
-			padding-top: 128px;
+			padding-top: 64px;
 		}
 
 		.grid {

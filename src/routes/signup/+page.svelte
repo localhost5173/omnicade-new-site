@@ -6,7 +6,7 @@
 	<div class="sec-head">
 		<p class="eyebrow">Omnicade players</p>
 		<h2 class="h2">CREATE YOUR <span class="gold">ACCOUNT</span></h2>
-		<p class="lede">Quit early? Your leftover minutes wait here instead of dying on the cabinet — and any Omnicade honors them.</p>
+		<p class="lede">Quit early? Your leftover minutes wait here instead of dying on the cabinet, and any Omnicade honors them.</p>
 	</div>
 
 	<div class="card" style="max-width:440px;margin:0 auto;padding:26px">

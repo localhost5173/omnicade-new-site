@@ -12,7 +12,7 @@
 		{#if form?.resent}
 			<div class="banner ok">If that address has an unconfirmed account, a fresh link is on its way.</div>
 		{:else if data?.state === 'verified'}
-			<div class="banner ok">Email confirmed — your account is live. See you at the cabinet!</div>
+			<div class="banner ok">Email confirmed: your account is live. See you at the cabinet!</div>
 			<a class="btn btn-gold" href="/login" style="display:inline-block;margin-top:8px">LOG IN</a>
 		{:else if data?.state === 'missing'}
 			<p class="lede">This page needs the link from your confirmation mail.</p>

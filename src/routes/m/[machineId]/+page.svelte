@@ -10,14 +10,14 @@
 
 	<div class="card" style="max-width:480px;margin:0 auto;padding:28px;text-align:center">
 		{#if data?.unreachable}
-			<div class="banner err">Can't reach the arcade service right now — the cabinet may be fine, try again in a moment.</div>
+			<div class="banner err">Can't reach the arcade service right now. The cabinet may be fine, try again in a moment.</div>
 			<a class="walk" href="/">Back to omnicade.eu</a>
 		{:else if !data?.machine}
 			<div class="banner err">No cabinet answers to this code.</div>
 			<a class="walk" href="/">Back to omnicade.eu</a>
 		{:else if form?.success}
 			<div class="banner ok">
-				The cabinet has your account. Pick your time on its screen — your stored minutes pay, no card needed.
+				The cabinet has your account. Pick your time on its screen: your stored minutes pay, no card needed.
 			</div>
 		{:else if !data?.loggedIn}
 			<p class="lede" style="margin:0 0 16px">
@@ -33,7 +33,7 @@
 				Balance: <strong style="color:var(--ok)">{Math.floor((data.balance ?? 0) / 60)} min</strong>
 			</p>
 			{#if !data.machine.online}
-				<div class="banner err">This cabinet is offline right now — try again when its screen is up.</div>
+				<div class="banner err">This cabinet is offline right now. Try again when its screen is up.</div>
 			{/if}
 			<form method="POST">
 				<button class="btn btn-gold" type="submit" disabled={!data.machine.online} style="width:100%">

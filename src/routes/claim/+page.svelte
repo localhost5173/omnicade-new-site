@@ -12,7 +12,7 @@
 	<div class="card" style="max-width:480px;margin:0 auto;padding:28px;text-align:center">
 		{#if form?.success}
 			<div class="banner ok">
-				Done — <strong>{Math.floor((form.swept ?? 0) / 60)} min</strong> moved to your account
+				Done: <strong>{Math.floor((form.swept ?? 0) / 60)} min</strong> moved to your account
 				(you now hold {Math.floor((form.balance ?? 0) / 60)} min).
 			</div>
 			<a class="btn btn-gold" href="/account" style="display:inline-block;margin-top:8px">GO TO YOUR ACCOUNT</a>
@@ -20,7 +20,7 @@
 			<div class="banner err">{form.error}</div>
 			<a class="walk" href="/">Back to omnicade.eu</a>
 		{:else if data?.unreachable}
-			<div class="banner err">Can't reach the arcade service right now — your code is fine, try again in a moment.</div>
+			<div class="banner err">Can't reach the arcade service right now. Your code is fine, try again in a moment.</div>
 			<a class="walk" href="/">Back to omnicade.eu</a>
 		{:else if data?.dead}
 			<div class="banner err">This code is invalid or has expired. Quitting a session early always mints a fresh one on the cabinet's thanks screen.</div>
@@ -31,7 +31,7 @@
 			</p>
 			<p class="lede" style="margin:0 0 18px">
 				are waiting{data?.preview.arcade_name ? ` on ${data.preview.arcade_name}` : ''}'s card.
-				Create an account (or log in) and they move under your login — ready on any Omnicade.
+				Create an account (or log in) and they move under your login, ready on any Omnicade.
 			</p>
 
 			{#if data?.loggedIn}
@@ -46,7 +46,7 @@
 					href={`/signup?next=${encodeURIComponent('/claim?code=' + (data?.code ?? ''))}`}>CREATE ACCOUNT</a>
 			{/if}
 		{:else}
-			<div class="banner err">This page needs a claim code — scan the QR on the cabinet's thanks screen.</div>
+			<div class="banner err">This page needs a claim code. Scan the QR on the cabinet's thanks screen.</div>
 			<a class="walk" href="/">Back to omnicade.eu</a>
 		{/if}
 	</div>

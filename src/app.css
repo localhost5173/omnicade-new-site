@@ -1,5 +1,5 @@
 /* ============================================================
-   omnicade.dev — design system
+   omnicade.dev: design system
    Palette + type lifted from the cabinet's own theme.json and
    the arcade-cabinet-ui reference: the site IS the cabinet UI.
    ============================================================ */
@@ -19,7 +19,7 @@
 	--yellow: #ffe14d;
 	--blue: #4aa3ff;
 
-	/* type families — the three vendored cabinet fonts */
+	/* type families: the three vendored cabinet fonts */
 	--display: 'Archivo Black', 'Arial Black', Impact, sans-serif;
 	--ui: 'Chakra Petch', 'Segoe UI', system-ui, sans-serif;
 	--pixel: 'Press Start 2P', 'Courier New', monospace;
@@ -36,7 +36,8 @@
 
 html {
 	scroll-behavior: smooth;
-	scroll-padding-top: 84px;
+	/* no fixed nav anymore, so anchor jumps need no offset */
+	scroll-padding-top: 0;
 }
 
 body {
