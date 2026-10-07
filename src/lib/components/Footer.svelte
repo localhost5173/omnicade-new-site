@@ -1,5 +1,7 @@
 <script lang="ts">
-	import { navLinks } from '$lib/data';
+	import { getLocale, strings } from '$lib/i18n';
+
+	const t = strings[getLocale()];
 </script>
 
 <footer id="contact">
@@ -7,12 +9,12 @@
 		<div class="base">
 			<div class="brand">
 				<img class="logo" src="/logo.jpg" alt="Omnicade" width="220" height="122" />
-				<p>Arcade machines that run real Steam games.</p>
+				<p>{t.footer.tagline}</p>
 				<a class="mail" href="mailto:beni@omnicade.se">beni@omnicade.se</a>
 			</div>
 
 			<nav aria-label="Footer">
-				{#each navLinks as [label, href] (href)}
+				{#each t.footer.links as [label, href] (href)}
 					<a {href}>{label}</a>
 				{/each}
 			</nav>

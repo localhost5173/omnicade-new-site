@@ -1,6 +1,8 @@
 <script lang="ts">
 	import SessionDemo from './SessionDemo.svelte';
-	import { stats } from '$lib/data';
+	import { getLocale, strings } from '$lib/i18n';
+
+	const t = strings[getLocale()];
 </script>
 
 <section class="hero" id="top">
@@ -9,23 +11,21 @@
 
 	<div class="wrap grid">
 		<div class="copy">
-			<p class="eyebrow">The arcade machine company</p>
+			<p class="eyebrow">{t.hero.eyebrow}</p>
 			<h1 class="h1">
-				REAL STEAM GAMES.<br />
-				<span class="gold">ONE CABINET.</span>
+				{t.hero.headlineTop}<br />
+				<span class="gold">{t.hero.headlineGold}</span>
 			</h1>
 			<p class="lede">
-				Omnicade builds arcade machines around today's <strong>biggest Steam titles</strong>,
-				pre-launched and waiting behind a single glowing screen. Tap a card, pick your time,
-				play.
+				{t.hero.ledeTop}<strong>{t.hero.ledeStrong}</strong>{t.hero.ledeRest}
 			</p>
 
 			<div class="actions">
-				<a class="btn btn-gold" href="#session">How a session works</a>
+				<a class="btn btn-gold" href="#session">{t.hero.cta}</a>
 			</div>
 
 			<dl class="stats">
-				{#each stats as s (s.label)}
+				{#each t.hero.stats as s (s.label)}
 					<div class="stat">
 						<dt>{s.n}</dt>
 						<dd>{s.label}</dd>
@@ -34,8 +34,7 @@
 			</dl>
 
 			<p class="legal">
-				✓ Every title on the cabinet is <strong>commercially licensed</strong>, so charging for
-				play is fully legal.
+				{t.hero.legalTop}<strong>{t.hero.legalStrong}</strong>{t.hero.legalRest}
 			</p>
 		</div>
 

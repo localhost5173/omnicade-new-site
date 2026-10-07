@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { tiers, topups } from '$lib/data';
 	import type { Tier, Topup } from '$lib/data';
+	import { getLocale, strings } from '$lib/i18n';
 
 	// The cabinet's session flow, shrunk to demo speed:
 	// attract → game → tiers → pay → countdown → running → extend/over.
@@ -106,6 +107,9 @@
 
 	const mmss = (s: number): string =>
 		`${Math.floor(Math.max(0, s) / 60)}:${String(Math.max(0, s) % 60).padStart(2, '0')}`;
+
+	// `t` is taken by the tier loops below, so the strings are `ui`
+	const ui = strings[getLocale()];
 </script>
 
 <div class="demo card" aria-label="Interactive session demo">
@@ -113,19 +117,19 @@
 		<span class="dot"></span>
 		<span class="dot"></span>
 		<span class="dot"></span>
-		<span class="title">OMNICADE · LIVE DEMO</span>
+		<span class="title">{ui.demo.chromeTitle}</span>
 	</div>
 
 	<div class="screen" class:low={lowTime}>
 		{#if phase === PHASE.ATTRACT}
 			<button class="pane attract" onclick={tapAny}>
 				<img class="attract-logo" src="/logo.jpg" alt="" aria-hidden="true" />
-				<p class="big press">TAP ANY BUTTON TO PLAY</p>
-				<p class="hint">this window counts as a button</p>
+				<p class="big press">{ui.demo.attractPrompt}</p>
+				<p class="hint">{ui.demo.attractHint}</p>
 			</button>
 		{:else if phase === PHASE.GAME}
 			<div class="pane">
-				<p class="k">PICK YOUR GAME</p>
+				<p class="k">{ui.demo.pickGame}</p>
 				<div class="gamegrid">
 					{#each GAMES as g (g)}
 						<button class="tier" onclick={() => pickGame(g)}>
@@ -136,7 +140,7 @@
 			</div>
 		{:else if phase === PHASE.TIERS}
 			<div class="pane">
-				<p class="k">PICK YOUR TIME</p>
+				<p class="k">{ui.demo.pickTime}</p>
 				<div class="tiergrid">
 					{#each tiers as t (t.minutes)}
 						<button class="tier" onclick={() => pickTier(t)}>
@@ -146,13 +150,12 @@
 						</button>
 					{/each}
 				</div>
-				<p class="hint">demo prices, real cabinet, real card reader</p>
 			</div>
 		{:else if phase === PHASE.PAY}
 			<div class="pane">
-				<p class="k">TAP CARD</p>
+				<p class="k">{ui.demo.tapCard}</p>
 				<div class="spinner" aria-hidden="true"></div>
-				<p class="hint">waiting for the payment server… (auto-approves, like the cabinet's test mode)</p>
+				<p class="hint">{ui.demo.payHint}</p>
 			</div>
 		{:else if phase === PHASE.COUNTDOWN}
 			<div class="pane">
@@ -165,22 +168,22 @@
 		{:else if phase === PHASE.RUNNING}
 			<div class="pane running">
 				{#if game}
-					<p class="now">NOW PLAYING · {game}</p>
+					<p class="now">{ui.demo.nowPlaying} · {game}</p>
 				{/if}
 				<div class="clock" class:warn={remaining <= 5}>
 					<span class="t">{mmss(remaining)}</span>
-					<span class="lbl">SESSION TIME</span>
+					<span class="lbl">{ui.demo.sessionTime}</span>
 				</div>
 				<div class="bar"><span style="width: {pct * 100}%"></span></div>
 				{#if lowTime}
-					<p class="toast">⚠ LOW TIME · TAP CARD TO ADD MORE</p>
+					<p class="toast">{ui.demo.lowTime}</p>
 				{:else}
-					<p class="hint">the real cabinet floats this timer over the live game, in the corner</p>
+					<p class="hint">{ui.demo.runningHint}</p>
 				{/if}
 			</div>
 		{:else if phase === PHASE.EXTEND}
 			<div class="pane">
-				<p class="k danger">GAME PAUSED, MID-FRAME</p>
+				<p class="k danger">{ui.demo.paused}</p>
 				<div class="tiergrid small">
 					{#each topups as t (t.minutes)}
 						<button class="tier" onclick={() => extend(t)}>
@@ -189,22 +192,22 @@
 						</button>
 					{/each}
 				</div>
-				<p class="hint">resume offer ends in <b>{grace}s</b> · nothing? time is <b>saved to your card</b></p>
-				<button class="walk" onclick={walkAway}>walk away (save time)</button>
+				<p class="hint">{@html ui.demo.extendHint(grace)}</p>
+				<button class="walk" onclick={walkAway}>{ui.demo.walkAway}</button>
 			</div>
 		{:else}
 			<div class="pane">
-				<p class="k">SESSION OVER</p>
-				<p class="big">TIME SAVED ✓</p>
-				<p class="hint">your remaining time is on your card, tap any Omnicade to continue</p>
+				<p class="k">{ui.demo.over}</p>
+				<p class="big">{ui.demo.timeSaved}</p>
+				<p class="hint">{ui.demo.overHint}</p>
 			</div>
 		{/if}
 		<div class="scan"></div>
 	</div>
 
 	<div class="foot">
-		<span class="chip gold">{phase.toUpperCase()}</span>
-		<button class="reset" onclick={reset}>↺ restart demo</button>
+		<span class="chip gold">{ui.demo.phases[phase.toUpperCase() as keyof typeof ui.demo.phases]}</span>
+		<button class="reset" onclick={reset}>{ui.demo.restart}</button>
 	</div>
 </div>
 

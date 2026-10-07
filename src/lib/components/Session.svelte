@@ -1,24 +1,23 @@
 <script lang="ts">
-	import { sessionSteps } from '$lib/data';
+	import { getLocale, strings } from '$lib/i18n';
+
+	const t = strings[getLocale()];
 </script>
 
 <section id="session">
 	<div class="wrap">
 		<div class="sec-head">
 			<div>
-				<p class="eyebrow">From coin-up to credits</p>
-				<h2 class="h2">A SESSION, <span class="gold">FRAME BY FRAME</span></h2>
-				<p class="lede">
-					This is the exact flow every Omnicade runs. The demo above plays at seconds; the real
-					cabinet plays at minutes.
-				</p>
+				<p class="eyebrow">{t.session.eyebrow}</p>
+				<h2 class="h2">{t.session.title} <span class="gold">{t.session.titleGold}</span></h2>
+				<p class="lede">{t.session.lede}</p>
 			</div>
 		</div>
 
 		<ol class="steps">
-			{#each sessionSteps as s (s.n)}
+			{#each t.session.steps as s, i (s.title)}
 				<li>
-					<span class="n">{s.n}</span>
+					<span class="n">{String(i + 1).padStart(2, '0')}</span>
 					<div>
 						<h3>{s.title}</h3>
 						<p>{s.body}</p>
