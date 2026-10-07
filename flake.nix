@@ -39,9 +39,10 @@
       pnpmDeps = pkgs.fetchPnpmDeps {
         inherit (finalAttrs) pname version src;
         fetcherVersion = 4;
-        # PR note: bumped for adapter-node + the player pages. When this
-        # hash goes stale, paste the `got:` from the build error here.
-        hash = "sha256-ta9SzQFL+GYzwDDodoP6XSbP1uHD4BITaxHBwQdrOSk=";
+        # PR note: bumped for adapter-node + the player pages + geoip-lite.
+        # When this hash goes stale, paste the `got:` from the build error
+        # here.
+        hash = "sha256-YdYW8UzvNezi+aLhkYXjbHlA1B0RNmrVqXub1roXNY8=";
       };
 
       buildPhase = ''
