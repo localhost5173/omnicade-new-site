@@ -56,8 +56,8 @@ export const playerFeedbackForm: FormDef = {
 	slug: 'fragor',
 	title: { sv: 'Hjälp oss forma framtidens Omnicade!', en: 'Help shape the future of Omnicade!' },
 	intro: {
-		sv: 'Omnicade är en innovation som jag och min vän skapat för att förvandla väntetider på platser som restauranger, hotell och köpcentrum till något roligare. Vi finjusterar just nu vår prototyp, och din feedback betyder allt för hur slutresultatet blir. Det tar bara ett par minuter, tack för att du hjälper oss att göra det här på riktigt!',
-		en: 'Omnicade is an innovation my friend and I built to turn waiting times at places like restaurants, hotels and shopping centres into something more fun. We are fine-tuning our prototype right now, and your feedback shapes the final product. It only takes a couple of minutes, thank you for helping us make this real!'
+		sv: 'Omnicade förvandlar väntetider på platser som restauranger, hotell och köpcentrum till något roligare. Vi finjusterar just nu vår prototyp, och din feedback betyder allt för hur slutresultatet blir. Det tar bara ett par minuter, tack för att du hjälper oss att göra det här på riktigt!',
+		en: 'Omnicade turns waiting time at places like restaurants, hotels and shopping centres into something more fun. We are fine-tuning our prototype right now, and your feedback shapes the final product. It only takes a couple of minutes, thank you for helping us make this real!'
 	},
 	questions: [
 		{
@@ -161,6 +161,13 @@ export const playerFeedbackForm: FormDef = {
 			)
 		},
 		{
+			key: 'venues_other',
+			type: 'text',
+			label: { sv: 'Var då? Skriv fritt:', en: 'Where? Write freely:' },
+			placeholder: { sv: 'T.ex. lasarettet, gymmet, tågstationen...', en: 'E.g. the hospital, the gym, the train station...' },
+			showIf: { key: 'venues', values: ['Annat'] }
+		},
+		{
 			key: 'play_with',
 			type: 'single',
 			label: { sv: 'Vem skulle du främst spela med?', en: 'Who would you mostly play with?' },
@@ -215,6 +222,12 @@ export const playerFeedbackForm: FormDef = {
 			)
 		},
 		{
+			key: 'session_length_other',
+			type: 'text',
+			label: { sv: 'Något annat? Skriv fritt:', en: 'Something else? Write freely:' },
+			placeholder: { sv: 'T.ex. 45 minuter, hela kvällen...', en: 'E.g. 45 minutes, the whole evening...' }
+		},
+		{
 			key: 'price_20_min',
 			type: 'single',
 			label: {
@@ -233,82 +246,16 @@ export const playerFeedbackForm: FormDef = {
 			)
 		},
 		{
-			key: 'price_10_min',
-			type: 'single',
-			label: {
-				sv: 'Vad vore ett rimligt pris för 10 minuters spelande?',
-				en: 'What would be a fair price for 10 minutes of play?'
-			},
-			required: true,
-			options: opts(
-				['20 kr', '20 SEK'],
-				['25 kr', '25 SEK'],
-				['30 kr', '30 SEK'],
-				['35 kr', '35 SEK'],
-				['Mer än 35 kr', 'More than 35 SEK'],
-				['Jag skulle inte betala', 'I would not pay']
-			)
-		},
-		{
-			key: 'price_30_min',
-			type: 'single',
-			label: {
-				sv: 'Vad vore ett rimligt pris för 30 minuters spelande?',
-				en: 'What would be a fair price for 30 minutes of play?'
-			},
-			required: true,
-			options: opts(
-				['30 kr', '30 SEK'],
-				['40 kr', '40 SEK'],
-				['50 kr', '50 SEK'],
-				['60 kr', '60 SEK'],
-				['Mer än 60 kr', 'More than 60 SEK'],
-				['Mer än 50 kr', 'More than 50 SEK'],
-				['Jag skulle inte betala', 'I would not pay']
-			)
-		},
-		{
-			key: 'price_60_min',
-			type: 'single',
-			label: {
-				sv: 'Vad vore ett rimligt pris för 60 minuters spelande?',
-				en: 'What would be a fair price for 60 minutes of play?'
-			},
-			required: true,
-			options: opts(
-				['40 kr', '40 SEK'],
-				['60 kr', '60 SEK'],
-				['80 kr', '80 SEK'],
-				['100 kr', '100 SEK'],
-				['Mer än 100 kr', 'More than 100 SEK'],
-				['Mer än 80 kr', 'More than 80 SEK'],
-				['Jag skulle inte betala', 'I would not pay']
-			)
-		},
-		{
 			key: 'payment_method',
-			type: 'single',
-			label: { sv: 'Hur skulle du helst betala?', en: 'How would you prefer to pay?' },
+			type: 'multi',
+			label: { sv: 'Hur skulle du helst betala? (välj alla som passar)', en: 'How would you prefer to pay? (pick all that suit you)' },
 			options: opts(
 				['Kort', 'Card'],
 				['Apple Pay', 'Apple Pay'],
 				['Google Pay', 'Google Pay'],
 				['Swish', 'Swish'],
-				['QR-kod', 'QR code'],
 				['Annat', 'Other']
 			)
-		},
-		{
-			key: 'why_choose_omnicade',
-			type: 'text',
-			label: {
-				sv: 'Vad skulle krävas för att du skulle välja att spela på en Omnicade i stället för på mobilen?',
-				en: 'What would it take for you to play on an Omnicade instead of your phone?'
-			},
-			placeholder: {
-				sv: 'Berätta vad som skulle få dig att välja Omnicade...',
-				en: 'Tell us what would make you pick the Omnicade...'
-			}
 		},
 		{
 			key: 'games_wanted',
@@ -407,6 +354,12 @@ export const businessPartnerForm: FormDef = {
 			)
 		},
 		{
+			key: 'business_type_other',
+			type: 'text',
+			label: { sv: 'Vilken då? Skriv fritt:', en: 'Which one? Write freely:' },
+			showIf: { key: 'business_type', values: ['Annat'] }
+		},
+		{
 			key: 'role',
 			type: 'single',
 			label: { sv: 'Vilken roll har du?', en: 'What is your role?' },
@@ -418,6 +371,12 @@ export const businessPartnerForm: FormDef = {
 				['Anställd', 'Employee'],
 				['Annat', 'Other']
 			)
+		},
+		{
+			key: 'role_other',
+			type: 'text',
+			label: { sv: 'Vilken roll då? Skriv fritt:', en: 'Which role? Write freely:' },
+			showIf: { key: 'role', values: ['Annat'] }
 		},
 		{
 			key: 'daily_visitors',
@@ -652,8 +611,14 @@ export function formBySlug(slug: string): FormDef | undefined {
 	return forms.find((f) => f.slug === slug);
 }
 
-/** A question renders only when every showIf it declares is satisfied. */
+/** A question renders only when every showIf it declares is satisfied.
+ * Single answers match directly; multi answers (arrays) match when any
+ * picked option is listed -- that's what drives the "Other" wildcards. */
 export function questionVisible(q: FormQuestion, answers: Record<string, unknown>): boolean {
 	if (!q.showIf) return true;
-	return q.showIf.values.includes(String(answers[q.showIf.key] ?? ''));
+	const value = answers[q.showIf.key];
+	if (Array.isArray(value)) {
+		return value.some((picked) => q.showIf!.values.includes(String(picked)));
+	}
+	return q.showIf.values.includes(String(value ?? ''));
 }
