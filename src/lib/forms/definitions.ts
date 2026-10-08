@@ -1,9 +1,9 @@
-// The site's survey forms, recreated from the original Tally forms
-// (tally.so/r/vGo1a8 and tally.so/r/pb81g1). A form is data: the renderer
-// in components/forms/FormQuestions.svelte turns a definition into the
-// page, the server action in server.ts validates + files it with the api,
-// and the dashboard reads the answers back as a JSON object keyed by
-// these stable question keys.
+// The site's survey forms (originally recreated from tally.so/r/vGo1a8
+// and tally.so/r/pb81g1, since reworked for launch). A form is data: the
+// renderer in components/forms/FormQuestions.svelte turns a definition
+// into the page, the server action in server.ts validates + files it
+// with the api, and the dashboard reads the answers back as a JSON
+// object keyed by these stable question keys.
 //
 // `key` is the storage key -- changing a label is free; changing a key
 // orphans the old answers, so don't.
@@ -22,6 +22,12 @@ export interface FormOption {
 	label: L;
 }
 
+export interface ShowIf {
+	key: string;
+	/** canonical values that make the question visible; '*' = any non-empty answer */
+	values: string[];
+}
+
 export interface FormQuestion {
 	key: string;
 	type: 'single' | 'multi' | 'scale' | 'text' | 'textarea' | 'email' | 'consent' | 'note';
@@ -34,8 +40,11 @@ export interface FormQuestion {
 	minLabel?: L;
 	maxLabel?: L;
 	placeholder?: L;
-	/** only render the question while answers[showIf.key] is one of these */
-	showIf?: { key: string; values: string[] };
+	/** text only: expect an amount, validated as a number (kr) */
+	numeric?: boolean;
+	/** visible while ANY clause matches; single answers match directly,
+	 * multi answers match when any picked option is listed */
+	showIf?: ShowIf | ShowIf[];
 }
 
 export interface FormDef {
@@ -54,10 +63,10 @@ const opts = (...entries: [string, string][]): FormOption[] =>
 export const playerFeedbackForm: FormDef = {
 	id: 'player-feedback',
 	slug: 'fragor',
-	title: { sv: 'Hjälp oss forma framtidens Omnicade!', en: 'Help shape the future of Omnicade!' },
+	title: { sv: 'Omnicades spelarenkät', en: 'Omnicade player survey' },
 	intro: {
-		sv: 'Omnicade förvandlar väntetider på platser som restauranger, hotell och köpcentrum till något roligare. Vi finjusterar just nu vår prototyp, och din feedback betyder allt för hur slutresultatet blir. Det tar bara ett par minuter, tack för att du hjälper oss att göra det här på riktigt!',
-		en: 'Omnicade turns waiting time at places like restaurants, hotels and shopping centres into something more fun. We are fine-tuning our prototype right now, and your feedback shapes the final product. It only takes a couple of minutes, thank you for helping us make this real!'
+		sv: 'Omnicade är en spelautomat som placeras på exempelvis restauranger, hotell och köpcentrum. Man betalar speltid med kort och spelar Steam-spel. Vi har en prototyp under utveckling och vill veta vad du tänker om konceptet. Enkäten tar ett par minuter.',
+		en: 'Omnicade is a gaming cabinet placed at venues such as restaurants, hotels and shopping centres. Players pay for play time by card and play Steam games. We have a prototype in development and want your opinion on the concept. The survey takes a couple of minutes.'
 	},
 	questions: [
 		{
@@ -111,31 +120,100 @@ export const playerFeedbackForm: FormDef = {
 			)
 		},
 		{
+			key: 'fighting_familiarity',
+			type: 'single',
+			label: {
+				sv: 'Bekantskap med fighting games?',
+				en: 'How familiar are you with fighting games?'
+			},
+			options: opts(
+				['Aldrig spelat', 'Never played'],
+				['Testat något fighting game', 'Tried one once or twice'],
+				['Spelar ibland', 'Play sometimes'],
+				['Spelar ofta', 'Play often']
+			)
+		},
+		{
+			key: 'last_arcade_visit',
+			type: 'single',
+			label: {
+				sv: 'När besökte du senast en spelhall, bowling eller flipperlokal?',
+				en: 'When did you last visit an arcade, bowling alley or pinball venue?'
+			},
+			options: opts(
+				['Inom den senaste månaden', 'Within the last month'],
+				['1–6 månader sedan', '1–6 months ago'],
+				['6–12 månader sedan', '6–12 months ago'],
+				['Mer än ett år sedan', 'More than a year ago'],
+				['Aldrig', 'Never']
+			)
+		},
+		{
+			key: 'spend_when_out',
+			type: 'single',
+			label: {
+				sv: 'Ungefär hur mycket lägger du på underhållning ute (spel, bowling, bio) per tillfälle?',
+				en: 'Roughly how much do you spend on entertainment out (games, bowling, cinema) per occasion?'
+			},
+			options: opts(
+				['0–100 kr', '0–100 SEK'],
+				['100–250 kr', '100–250 SEK'],
+				['250–500 kr', '250–500 SEK'],
+				['Över 500 kr', 'Over 500 SEK'],
+				['Det varierar för mycket', 'Varies too much']
+			)
+		},
+		{
+			key: 'waiting_habits',
+			type: 'multi',
+			label: {
+				sv: 'Vad gör du vanligtvis medan du väntar på en plats? (välj alla som stämmer)',
+				en: 'What do you usually do while waiting at a venue? (pick all that apply)'
+			},
+			options: opts(
+				['Skrollar mobilen', 'Scrolling my phone'],
+				['Pratar med mitt sällskap', 'Talking to my group'],
+				['Tittar på något', 'Watching something'],
+				['Läser eller jobbar', 'Reading or working'],
+				['Gör inget särskilt', 'Nothing in particular'],
+				['Annat', 'Other']
+			)
+		},
+		{
+			key: 'waiting_other',
+			type: 'text',
+			label: { sv: 'Något annat? Skriv fritt:', en: 'Something else? Write freely:' },
+			showIf: { key: 'waiting_habits', values: ['Annat'] }
+		},
+		{
 			key: 'demo_note_1',
 			type: 'note',
 			label: {
-				sv: 'Här kommer vi visa upp Omnicade i aktion. Du hittar den på en plats du besöker, betalar för speltid och spelar direkt, själv eller med andra.',
-				en: 'Here is where we show Omnicade in action. You find it at a place you visit, pay for play time and start playing right away, alone or with others.'
+				sv: 'Så fungerar det: du hittar en Omnicade på en plats du besöker, betalar för speltid och spelar direkt, själv eller med andra.',
+				en: 'How it works: you find an Omnicade at a place you visit, pay for play time and start playing right away, alone or with others.'
 			}
-		},
-		{
-			key: 'interest',
-			type: 'scale',
-			label: { sv: 'Hur intressant verkar Omnicade för dig?', en: 'How interesting does Omnicade seem to you?' },
-			required: true,
-			minLabel: { sv: 'Inte alls intressant', en: 'Not interesting at all' },
-			maxLabel: { sv: 'Mycket intressant', en: 'Very interesting' }
 		},
 		{
 			key: 'try_likelihood',
 			type: 'scale',
 			label: {
-				sv: 'Om du såg en Omnicade på en plats du besökte, hur sannolikt är det att du skulle testa den?',
-				en: 'If you saw an Omnicade at a place you visit, how likely are you to try it?'
+				sv: 'Om du såg en Omnicade på en plats du besökte, hur sannolikt är det att du skulle testa den? (1 = mycket osannolikt, 5 = mycket sannolikt)',
+				en: 'If you saw an Omnicade at a place you visit, how likely are you to try it? (1 = very unlikely, 5 = very likely)'
 			},
 			required: true,
 			minLabel: { sv: 'Mycket osannolikt', en: 'Very unlikely' },
 			maxLabel: { sv: 'Mycket sannolikt', en: 'Very likely' }
+		},
+		{
+			key: 'kiosk_comfort',
+			type: 'scale',
+			label: {
+				sv: 'Hur bekväm skulle du vara med att spela på en Omnicade i en kiosk eller spelbutik?',
+				en: 'How comfortable would you be playing an Omnicade in a kiosk or gaming shop?'
+			},
+			required: true,
+			minLabel: { sv: 'Inte bekvämt alls', en: 'Not comfortable at all' },
+			maxLabel: { sv: 'Helt okej', en: 'Totally fine' }
 		},
 		{
 			key: 'venues',
@@ -154,6 +232,7 @@ export const playerFeedbackForm: FormDef = {
 				['Biograf', 'Cinema'],
 				['Studentområde', 'Student area'],
 				['Spelhall', 'Arcade hall'],
+				['Kiosk/spelbutik', 'Kiosk/gaming shop'],
 				['Event/festival', 'Event/festival'],
 				['Flygplats/tågstation', 'Airport/train station'],
 				['Ingenstans särskilt', 'Nowhere in particular'],
@@ -164,39 +243,11 @@ export const playerFeedbackForm: FormDef = {
 			key: 'venues_other',
 			type: 'text',
 			label: { sv: 'Var då? Skriv fritt:', en: 'Where? Write freely:' },
-			placeholder: { sv: 'T.ex. lasarettet, gymmet, tågstationen...', en: 'E.g. the hospital, the gym, the train station...' },
-			showIf: { key: 'venues', values: ['Annat'] }
-		},
-		{
-			key: 'play_with',
-			type: 'single',
-			label: { sv: 'Vem skulle du främst spela med?', en: 'Who would you mostly play with?' },
-			options: opts(
-				['Själv', 'By myself'],
-				['Kompisar', 'Friends'],
-				['Familj', 'Family'],
-				['Partner', 'Partner'],
-				['Andra personer på platsen', 'Other people at the venue'],
-				['Spelar ingen roll', 'Does not matter']
-			)
-		},
-		{
-			key: 'reason',
-			type: 'single',
-			label: {
-				sv: 'Vad skulle vara den största anledningen till att du spelar?',
-				en: 'What would be the biggest reason for you to play?'
+			placeholder: {
+				sv: 'T.ex. lasarettet, gymmet, tågstationen...',
+				en: 'E.g. the hospital, the gym, the train station...'
 			},
-			options: opts(
-				['Testa ett nytt spel', 'Try a new game'],
-				['Spela med kompisar', 'Play with friends'],
-				['Något att göra medan jag väntar', 'Something to do while waiting'],
-				['Arkadkänslan', 'The arcade feeling'],
-				['Tävlingsmomentet', 'The competition'],
-				['Något annorlunda att göra', 'Something different to do'],
-				['Jag skulle troligen inte spela', 'I probably would not play'],
-				['Annat', 'Other']
-			)
+			showIf: { key: 'venues', values: ['Annat'] }
 		},
 		{
 			key: 'session_note',
@@ -207,11 +258,11 @@ export const playerFeedbackForm: FormDef = {
 			}
 		},
 		{
-			key: 'session_length',
+			key: 'first_block',
 			type: 'single',
 			label: {
-				sv: 'Hur länge skulle du helst vilja spela åt gången?',
-				en: 'How long would you prefer to play at a time?'
+				sv: 'Vilket tidsblock skulle du köpa först?',
+				en: 'Which time block would you buy first?'
 			},
 			required: true,
 			options: opts(
@@ -222,33 +273,75 @@ export const playerFeedbackForm: FormDef = {
 			)
 		},
 		{
-			key: 'session_length_other',
-			type: 'text',
-			label: { sv: 'Något annat? Skriv fritt:', en: 'Something else? Write freely:' },
-			placeholder: { sv: 'T.ex. 45 minuter, hela kvällen...', en: 'E.g. 45 minutes, the whole evening...' }
+			key: 'pricing_model',
+			type: 'single',
+			label: { sv: 'Vilken prismodell känns naturlig?', en: 'Which pricing model feels natural?' },
+			options: opts(
+				['Per minut speltid', 'Per minute of play time'],
+				['Per match eller runda', 'Per match or round'],
+				['Per kredit eller pollett', 'Per credit or token'],
+				['Ingen skillnad för mig', 'No difference to me']
+			)
 		},
 		{
-			key: 'price_20_min',
-			type: 'single',
+			key: 'price_note',
+			type: 'note',
 			label: {
-				sv: 'Vad vore ett rimligt pris för 20 minuters spelande?',
-				en: 'What would be a fair price for 20 minutes of play?'
+				sv: 'Fyra snabba prisfrågor om 20 minuters spelande, svara i kronor:',
+				en: 'Four quick price questions about 20 minutes of play, answer in SEK:'
+			}
+		},
+		{
+			key: 'price_too_cheap',
+			type: 'text',
+			label: {
+				sv: 'Vid vilket pris blir det så billigt att du misstänker att något är fel?',
+				en: 'At what price would it be so cheap you would doubt the quality?'
 			},
 			required: true,
-			options: opts(
-				['25 kr', '25 SEK'],
-				['35 kr', '35 SEK'],
-				['40 kr', '40 SEK'],
-				['45 kr', '45 SEK'],
-				['Mer än 45 kr', 'More than 45 SEK'],
-				['Mer än 40 kr', 'More than 40 SEK'],
-				['Jag skulle inte betala', 'I would not pay']
-			)
+			numeric: true,
+			placeholder: { sv: 'kr', en: 'SEK' }
+		},
+		{
+			key: 'price_bargain',
+			type: 'text',
+			label: {
+				sv: 'Vid vilket pris är det en riktig affär?',
+				en: 'At what price is it a real bargain?'
+			},
+			required: true,
+			numeric: true,
+			placeholder: { sv: 'kr', en: 'SEK' }
+		},
+		{
+			key: 'price_expensive',
+			type: 'text',
+			label: {
+				sv: 'Vid vilket pris börjar det bli dyrt?',
+				en: 'At what price does it start getting expensive?'
+			},
+			required: true,
+			numeric: true,
+			placeholder: { sv: 'kr', en: 'SEK' }
+		},
+		{
+			key: 'price_too_expensive',
+			type: 'text',
+			label: {
+				sv: 'Vid vilket pris är det så dyrt att du inte spelar?',
+				en: 'At what price would it be so expensive you would not play?'
+			},
+			required: true,
+			numeric: true,
+			placeholder: { sv: 'kr', en: 'SEK' }
 		},
 		{
 			key: 'payment_method',
 			type: 'multi',
-			label: { sv: 'Hur skulle du helst betala? (välj alla som passar)', en: 'How would you prefer to pay? (pick all that suit you)' },
+			label: {
+				sv: 'Vilka betalsätt skulle du använda? (välj alla som passar)',
+				en: 'Which payment methods would you use? (pick all that suit you)'
+			},
 			options: opts(
 				['Kort', 'Card'],
 				['Apple Pay', 'Apple Pay'],
@@ -259,9 +352,25 @@ export const playerFeedbackForm: FormDef = {
 		},
 		{
 			key: 'games_wanted',
+			type: 'multi',
+			label: {
+				sv: 'Vilka av de här spelen skulle du spela? (välj alla)',
+				en: 'Which of these games would you play? (pick any)'
+			},
+			options: opts(
+				['Street Fighter 6', 'Street Fighter 6'],
+				['Stickman Fight', 'Stickman Fight'],
+				['Brawlhalla', 'Brawlhalla'],
+				['Rivals of Aether', 'Rivals of Aether'],
+				['Annat', 'Other']
+			)
+		},
+		{
+			key: 'games_wanted_other',
 			type: 'text',
-			label: { sv: 'Vilka spel skulle du vilja kunna spela på Omnicade?', en: 'Which games would you want to play on an Omnicade?' },
-			placeholder: { sv: 'T.ex. Mario Kart, Street Fighter, FIFA...', en: 'E.g. Mario Kart, Street Fighter, FIFA...' }
+			label: { sv: 'Vilka då? Skriv fritt:', en: 'Which ones? Write freely:' },
+			placeholder: { sv: 'T.ex. Tetris, Rocket League...', en: 'E.g. Tetris, Rocket League...' },
+			showIf: { key: 'games_wanted', values: ['Annat'] }
 		},
 		{
 			key: 'blockers',
@@ -286,8 +395,17 @@ export const playerFeedbackForm: FormDef = {
 		{
 			key: 'ideas',
 			type: 'textarea',
-			label: { sv: 'Finns det något du skulle ändra eller förbättra?', en: 'Is there anything you would change or improve?' },
+			label: {
+				sv: 'Finns det något du skulle ändra eller förbättra? (frivilligt)',
+				en: 'Is there anything you would change or improve? (optional)'
+			},
 			placeholder: { sv: 'Dela med dig av dina idéer eller funderingar...', en: 'Share your ideas or thoughts...' }
+		},
+		{
+			key: 'city',
+			type: 'text',
+			label: { sv: 'Var bor du? (ort eller område, frivilligt)', en: 'Where do you live? (city or area, optional)' },
+			placeholder: { sv: 'T.ex. Göteborg, Majorna...', en: 'E.g. Chicago, the north side...' }
 		},
 		{
 			key: 'wants_test',
@@ -320,7 +438,8 @@ export const playerFeedbackForm: FormDef = {
 				sv: 'Jag godkänner att Omnicade sparar min e-post för att kontakta mig om test. Jag kan när som helst be om att den raderas.',
 				en: 'I consent to Omnicade storing my email to contact me about testing. I can ask for it to be deleted at any time.'
 			},
-			required: true
+			required: true,
+			showIf: { key: 'wants_test', values: ['Ja', 'Kanske'] }
 		}
 	]
 };
@@ -328,10 +447,10 @@ export const playerFeedbackForm: FormDef = {
 export const businessPartnerForm: FormDef = {
 	id: 'business-partner',
 	slug: 'for-foretag',
-	title: { sv: 'Är Omnicade rätt för er verksamhet?', en: 'Is Omnicade right for your business?' },
+	title: { sv: 'Omnicade för verksamheter', en: 'Omnicade for businesses' },
 	intro: {
-		sv: 'Vi söker samarbetspartners som vill skapa mervärde för sina besökare genom vår fysiska spelstation. Din feedback är värdefull för oss, oavsett vad svaret blir. Tar cirka 3 minuter.',
-		en: 'We are looking for partners who want to add value for their visitors through our physical gaming station. Your feedback is valuable to us whatever the answer. Takes about 3 minutes.'
+		sv: 'Vi utvärderar en spelstation som vi själva placerar, äger och driver hos verksamheter som din. Ni står för platsen och får ersättning enligt avtal. Enkäten tar ungefär 3 minuter.',
+		en: 'We are evaluating a gaming station that we place, own and operate at venues like yours. You provide the space and receive compensation per agreement. The survey takes about 3 minutes.'
 	},
 	questions: [
 		{
@@ -345,6 +464,7 @@ export const businessPartnerForm: FormDef = {
 				['Hotell', 'Hotel'],
 				['Köpcentrum', 'Shopping centre'],
 				['Butik', 'Retail store'],
+				['Kiosk/spelbutik/tobak', 'Kiosk/gaming shop/tobacconist'],
 				['Studentboende', 'Student housing'],
 				['Kontor', 'Office'],
 				['Event', 'Events'],
@@ -379,6 +499,27 @@ export const businessPartnerForm: FormDef = {
 			showIf: { key: 'role', values: ['Annat'] }
 		},
 		{
+			key: 'decision_maker',
+			type: 'single',
+			label: {
+				sv: 'Vem skulle fatta beslutet om en sådan pilot?',
+				en: 'Who would decide on a pilot like this?'
+			},
+			options: opts(
+				['Jag själv', 'Me'],
+				['Ägaren/huvudkontoret', 'The owner/head office'],
+				['Fastighetsägaren', 'The property owner'],
+				['Vet inte', 'Do not know'],
+				['Annat', 'Other']
+			)
+		},
+		{
+			key: 'decision_maker_other',
+			type: 'text',
+			label: { sv: 'Vem då? Skriv fritt:', en: 'Who? Write freely:' },
+			showIf: { key: 'decision_maker', values: ['Annat'] }
+		},
+		{
 			key: 'daily_visitors',
 			type: 'single',
 			label: { sv: 'Ungefär hur många besökare har ni per dag?', en: 'Roughly how many visitors do you have per day?' },
@@ -390,6 +531,30 @@ export const businessPartnerForm: FormDef = {
 				['250–500', '250–500'],
 				['Fler än 500', 'More than 500'],
 				['Vet inte', 'Do not know']
+			)
+		},
+		{
+			key: 'dwell_time',
+			type: 'single',
+			label: { sv: 'Hur lång tid stannar besökarna i genomsnitt?', en: 'How long do visitors typically stay?' },
+			options: opts(
+				['Under 15 minuter', 'Under 15 minutes'],
+				['15–30 minuter', '15–30 minutes'],
+				['30–60 minuter', '30–60 minutes'],
+				['Över en timme', 'Over an hour'],
+				['Varierar kraftigt', 'Varies a lot']
+			)
+		},
+		{
+			key: 'peak_hours',
+			type: 'multi',
+			label: { sv: 'När är ni som mest belagda? (välj alla)', en: 'When are you at your busiest? (pick all)' },
+			options: opts(
+				['Förmiddagar', 'Mornings'],
+				['Eftermiddagar', 'Afternoons'],
+				['Kvällar', 'Evenings'],
+				['Helger', 'Weekends'],
+				['Jämnt ut över veckan', 'Evenly across the week']
 			)
 		},
 		{
@@ -412,6 +577,31 @@ export const businessPartnerForm: FormDef = {
 			showIf: { key: 'has_entertainment', values: ['Ja'] }
 		},
 		{
+			key: 'existing_machines',
+			type: 'text',
+			label: {
+				sv: 'Vilka underhållningsmaskiner står i lokalen idag, om några? (frivilligt)',
+				en: 'What amusement machines stand in your venue today, if any? (optional)'
+			},
+			placeholder: { sv: 'T.ex. fotbollsspel, flipper, biljard', en: 'E.g. foosball, pinball, pool tables' }
+		},
+		{
+			key: 'revenue_share',
+			type: 'single',
+			label: {
+				sv: 'Vilken andel av intäkterna från de maskinerna får ni?',
+				en: 'What share of the revenue from those machines do you get?'
+			},
+			showIf: { key: 'existing_machines', values: ['*'] },
+			options: opts(
+				['Vi äger maskinerna själva', 'We own the machines ourselves'],
+				['Under 20%', 'Under 20%'],
+				['20–30%', '20–30%'],
+				['Över 30%', 'Over 30%'],
+				['Vet inte', 'Do not know']
+			)
+		},
+		{
 			key: 'model_note',
 			type: 'note',
 			label: {
@@ -420,15 +610,25 @@ export const businessPartnerForm: FormDef = {
 			}
 		},
 		{
-			key: 'relevance',
+			key: 'pilot_interest',
 			type: 'scale',
 			label: {
-				sv: 'Hur relevant tror du att Omnicade skulle vara för er verksamhet?',
-				en: 'How relevant do you think Omnicade would be for your business?'
+				sv: 'Hur intresserade skulle ni vara av att testa Omnicade hos er under en pilotperiod? (1 = inte alls, 5 = mycket)',
+				en: 'How interested would you be in trying an Omnicade for a pilot period? (1 = not at all, 5 = very)'
 			},
 			required: true,
-			minLabel: { sv: 'Inte alls relevant', en: 'Not relevant at all' },
-			maxLabel: { sv: 'Mycket relevant', en: 'Very relevant' }
+			minLabel: { sv: 'Inte alls intresserade', en: 'Not interested at all' },
+			maxLabel: { sv: 'Mycket intresserade', en: 'Very interested' }
+		},
+		{
+			key: 'ops_importance',
+			type: 'scale',
+			label: {
+				sv: 'Hur viktigt är det att ni inte själva behöver sköta den dagliga driften?',
+				en: 'How important is it that you do not have to handle the day-to-day operation?'
+			},
+			minLabel: { sv: 'Inte viktigt', en: 'Not important' },
+			maxLabel: { sv: 'Avgörande', en: 'Decisive' }
 		},
 		{
 			key: 'benefits',
@@ -450,31 +650,13 @@ export const businessPartnerForm: FormDef = {
 			)
 		},
 		{
-			key: 'pilot_interest',
-			type: 'scale',
-			label: {
-				sv: 'Hur intresserade skulle ni vara av att testa Omnicade hos er under en pilotperiod?',
-				en: 'How interested would you be in trying an Omnicade for a pilot period?'
-			},
-			required: true,
-			minLabel: { sv: 'Inte alls intresserade', en: 'Not interested at all' },
-			maxLabel: { sv: 'Mycket intresserade', en: 'Very interested' }
-		},
-		{
 			key: 'placement',
 			type: 'text',
-			label: { sv: 'Var i lokalen skulle en Omnicade kunna stå?', en: 'Where in your venue could an Omnicade stand?' },
-			placeholder: { sv: 'T.ex. vid entrén, i väntytan, nära baren', en: 'E.g. by the entrance, in the waiting area, near the bar' }
-		},
-		{
-			key: 'ops_importance',
-			type: 'scale',
 			label: {
-				sv: 'Hur viktigt är det att ni inte själva behöver sköta den dagliga driften?',
-				en: 'How important is it that you do not have to handle the day-to-day operation?'
+				sv: 'Var i lokalen skulle en Omnicade kunna stå? (frivilligt)',
+				en: 'Where in your venue could an Omnicade stand? (optional)'
 			},
-			minLabel: { sv: 'Inte viktigt', en: 'Not important' },
-			maxLabel: { sv: 'Avgörande', en: 'Decisive' }
+			placeholder: { sv: 'T.ex. vid entrén, i väntytan, nära baren', en: 'E.g. by the entrance, in the waiting area, near the bar' }
 		},
 		{
 			key: 'obstacles',
@@ -494,6 +676,7 @@ export const businessPartnerForm: FormDef = {
 				['Utseende/design', 'Looks/design'],
 				['Underhåll', 'Maintenance'],
 				['Administration', 'Administration'],
+				['Regler/tillstånd', 'Regulations/permits'],
 				['Inga särskilda hinder', 'No particular obstacles'],
 				['Annat', 'Other']
 			)
@@ -514,6 +697,18 @@ export const businessPartnerForm: FormDef = {
 			)
 		},
 		{
+			key: 'pilot_timeline',
+			type: 'single',
+			label: { sv: 'När skulle ni kunna starta en pilot?', en: 'When could you start a pilot?' },
+			options: opts(
+				['Omgående', 'Right away'],
+				['Inom 3 månader', 'Within 3 months'],
+				['Inom 6 månader', 'Within 6 months'],
+				['Inom ett år', 'Within a year'],
+				['Inte aktuell', 'Not on the table']
+			)
+		},
+		{
 			key: 'wants_contact',
 			type: 'single',
 			label: {
@@ -526,6 +721,18 @@ export const businessPartnerForm: FormDef = {
 				['Kanske – jag vill veta mer', 'Maybe – I want to know more'],
 				['Nej', 'No']
 			)
+		},
+		{
+			key: 'what_would_change',
+			type: 'textarea',
+			label: {
+				sv: 'Vad skulle behöva vara annorlunda för att det skulle vara intressant?',
+				en: 'What would need to be different for this to be interesting?'
+			},
+			showIf: [
+				{ key: 'pilot_interest', values: ['1', '2'] },
+				{ key: 'wants_contact', values: ['Nej'] }
+			]
 		},
 		{
 			key: 'name',
@@ -592,14 +799,10 @@ export const businessPartnerForm: FormDef = {
 				sv: 'Jag godkänner att Omnicade sparar mina kontaktuppgifter för att kontakta mig om ett samarbete.',
 				en: 'I consent to Omnicade storing my contact details to reach me about a cooperation.'
 			},
-			required: true
-		},
-		{
-			key: 'what_would_change',
-			type: 'text',
-			label: {
-				sv: 'Vad skulle behöva vara annorlunda för att det skulle vara intressant?',
-				en: 'What would need to be different for this to be interesting?'
+			required: true,
+			showIf: {
+				key: 'wants_contact',
+				values: ['Ja – kontakta mig', 'Kanske – jag vill veta mer']
 			}
 		}
 	]
@@ -611,14 +814,20 @@ export function formBySlug(slug: string): FormDef | undefined {
 	return forms.find((f) => f.slug === slug);
 }
 
-/** A question renders only when every showIf it declares is satisfied.
+/** A question renders only when ANY of its showIf clauses is satisfied.
  * Single answers match directly; multi answers (arrays) match when any
- * picked option is listed -- that's what drives the "Other" wildcards. */
+ * picked option is listed; the '*' wildcard means "any non-empty answer". */
 export function questionVisible(q: FormQuestion, answers: Record<string, unknown>): boolean {
 	if (!q.showIf) return true;
-	const value = answers[q.showIf.key];
-	if (Array.isArray(value)) {
-		return value.some((picked) => q.showIf!.values.includes(String(picked)));
-	}
-	return q.showIf.values.includes(String(value ?? ''));
+	const clauses = Array.isArray(q.showIf) ? q.showIf : [q.showIf];
+	return clauses.some((clause) => {
+		const value = answers[clause.key];
+		if (clause.values.includes('*')) {
+			return Array.isArray(value) ? value.length > 0 : String(value ?? '').trim() !== '';
+		}
+		if (Array.isArray(value)) {
+			return value.some((picked) => clause.values.includes(String(picked)));
+		}
+		return clause.values.includes(String(value ?? ''));
+	});
 }

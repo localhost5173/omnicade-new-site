@@ -81,7 +81,7 @@
 				{:else if q.type === 'email'}
 					<input class="input" type="email" name={q.key} placeholder={q.placeholder?.[locale]} />
 				{:else if q.type === 'text'}
-					<input class="input" type="text" name={q.key} placeholder={q.placeholder?.[locale]} />
+					<input class="input" type="text" name={q.key} placeholder={q.placeholder?.[locale]} inputmode={q.numeric ? 'decimal' : undefined} />
 				{:else if q.type === 'consent'}
 					<label class="choice consent">
 						<input type="checkbox" name={q.key} required={q.required} />

@@ -49,9 +49,23 @@ export function createSubmitAction(def: FormDef) {
 				if (q.type === 'email' && value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
 					return fail(400, { error: t.forms.badEmail });
 				}
-				if (value) answers[q.key] = value;
+				if (q.numeric && value) {
+					// Van Westendorp prices: whole kronor, or decimals with a
+					// comma or dot -- normalized to a dot before storing
+					if (!/^\d+([.,]\d+)?$/.test(value)) {
+						return fail(400, { error: t.forms.badNumber });
+					}
+					answers[q.key] = value.replace(',', '.');
+				} else if (value) {
+					answers[q.key] = value;
+				}
 			}
 		}
+
+		// traffic source tag (?src= / ?utm_source= on the form page), so
+		// self-selected respondents can be read per channel without asking
+		const src = String(data.get('__src') ?? '').trim();
+		if (src) answers.src = src;
 
 		// the lifted email column: the api uses it for follow-up queries
 		const email = typeof answers.email === 'string' ? answers.email : '';

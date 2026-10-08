@@ -3,12 +3,17 @@
 	// honeypot, submit, and the thanks state. The two routes differ only in
 	// their FormDef and the thank-you copy.
 	import { enhance } from '$app/forms';
+	import { page } from '$app/state';
 	import FormQuestions from './FormQuestions.svelte';
 	import { getLocale, strings } from '$lib/i18n';
 	import type { FormDef } from '$lib/forms/definitions';
 
 	const locale = getLocale();
 	const t = strings[locale];
+
+	// self-selected respondents: tag the channel via ?src= / ?utm_source=
+	// on the form url, instead of asking about it in the survey
+	const src = page.url.searchParams.get('src') ?? page.url.searchParams.get('utm_source') ?? '';
 
 	let {
 		def,
@@ -72,6 +77,10 @@
 					<input type="text" name="website" tabindex="-1" autocomplete="off" />
 				</label>
 			</div>
+
+			{#if src}
+				<input type="hidden" name="__src" value={src} />
+			{/if}
 
 			<button class="btn btn-gold" type="submit" disabled={submitting}>
 				{submitting ? t.forms.submitting : t.forms.submit}

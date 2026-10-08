@@ -73,6 +73,7 @@ export interface Strings {
 		answerQuestion: (label: string) => string;
 		maxChoices: (n: number) => string;
 		badEmail: string;
+		badNumber: string;
 		submitFailed: string;
 	};
 	formPages: {
@@ -180,17 +181,18 @@ const sv: Strings = {
 		answerQuestion: (label) => `Svara på frågan: ${label}`,
 		maxChoices: (n) => `Välj högst ${n} alternativ.`,
 		badEmail: 'E-postadressen ser inte ut som en e-postadress.',
+		badNumber: 'Ange beloppet i hela kronor, t.ex. 40.',
 		submitFailed: 'Något gick fel. Försök igen.'
 	},
 	formPages: {
 		fragor: {
-			title: 'Hjälp oss forma framtidens Omnicade!',
-			description: 'Svara på Omnicades spelarenkät.',
+			title: 'Omnicades spelarenkät',
+			description: 'Kort enkät om spelvanor och vad du tänker om Omnicade-konceptet.',
 			thanksBody: 'Dina svar är sparade. Hör av dig till beni@omnicade.se om det är något du vill lägga till.'
 		},
 		'for-foretag': {
-			title: 'Är Omnicade rätt för er verksamhet?',
-			description: 'Berätta om er verksamhet så diskuterar vi en Omnicade hos er.',
+			title: 'Omnicade för verksamheter',
+			description: 'Kort enkät för verksamheter som överväger en spelstation från Omnicade.',
 			thanksBody: 'Vi har dina uppgifter och hör av oss inom kort. Ser du fel i dem? Skriv till beni@omnicade.se.'
 		}
 	}
@@ -295,17 +297,18 @@ const en: Strings = {
 		answerQuestion: (label) => `Please answer: ${label}`,
 		maxChoices: (n) => `Pick at most ${n} options.`,
 		badEmail: 'That email address does not look like an email address.',
+		badNumber: 'Enter the amount in whole kronor, e.g. 40.',
 		submitFailed: 'Something went wrong. Try again.'
 	},
 	formPages: {
 		fragor: {
-			title: 'Help shape the future of Omnicade!',
-			description: 'Answer the Omnicade player survey.',
+			title: 'Omnicade player survey',
+			description: 'A short survey about gaming habits and what you think of the Omnicade concept.',
 			thanksBody: 'Your answers are saved. Mail beni@omnicade.se if there is anything you want to add.'
 		},
 		'for-foretag': {
-			title: 'Is Omnicade right for your business?',
-			description: 'Tell us about your venue and we will discuss an Omnicade with you.',
+			title: 'Omnicade for businesses',
+			description: 'A short survey for venues considering a self-operated gaming station.',
 			thanksBody: 'We have your details and will get back to you shortly. Anything wrong? Write beni@omnicade.se.'
 		}
 	}
