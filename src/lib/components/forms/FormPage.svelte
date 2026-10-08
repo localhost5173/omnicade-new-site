@@ -40,6 +40,10 @@
 </script>
 
 <div class="wrap">
+	<a class="logo-link" href="/" aria-label="Omnicade">
+		<img class="logo" src="/logo.jpg" alt="Omnicade" width="150" height="84" />
+	</a>
+
 	{#if form?.ok}
 		<div class="thanks">
 			<p class="t-title">TACK!</p>
@@ -90,6 +94,19 @@
 </div>
 
 <style>
+	.logo-link {
+		display: inline-block;
+		margin-bottom: 44px;
+	}
+
+	.logo {
+		display: block;
+		width: 150px;
+		height: auto;
+		/* the jpg's pure-black box disappears into the page's near-black bg */
+		mix-blend-mode: lighten;
+	}
+
 	form {
 		margin-top: 44px;
 		max-width: 640px;

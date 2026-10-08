@@ -273,17 +273,6 @@ export const playerFeedbackForm: FormDef = {
 			)
 		},
 		{
-			key: 'pricing_model',
-			type: 'single',
-			label: { sv: 'Vilken prismodell känns naturlig?', en: 'Which pricing model feels natural?' },
-			options: opts(
-				['Per minut speltid', 'Per minute of play time'],
-				['Per match eller runda', 'Per match or round'],
-				['Per kredit eller pollett', 'Per credit or token'],
-				['Ingen skillnad för mig', 'No difference to me']
-			)
-		},
-		{
 			key: 'price_note',
 			type: 'note',
 			label: {
