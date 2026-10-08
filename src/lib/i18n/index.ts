@@ -88,7 +88,7 @@ const sv: Strings = {
 	ogDescription: 'Riktiga Steam-spel bakom en enda lysande skärm. Kortbetalning, sparade sessioner, dra och spela.',
 	hero: {
 		eyebrow: 'Arkadmaskinsföretaget',
-		headlineTop: 'RIKTA STEAM-SPEL.',
+		headlineTop: 'RIKTIGA STEAM-SPEL.',
 		headlineGold: 'EN MASKIN.',
 		ledeTop: 'Omnicade bygger arkadmaskiner runt dagens ',
 		ledeStrong: 'största Steam-titlar',
