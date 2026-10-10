@@ -340,28 +340,6 @@ export const playerFeedbackForm: FormDef = {
 			)
 		},
 		{
-			key: 'games_wanted',
-			type: 'multi',
-			label: {
-				sv: 'Vilka av de här spelen skulle du spela? (välj alla)',
-				en: 'Which of these games would you play? (pick any)'
-			},
-			options: opts(
-				['Street Fighter 6', 'Street Fighter 6'],
-				['Stickman Fight', 'Stickman Fight'],
-				['Brawlhalla', 'Brawlhalla'],
-				['Rivals of Aether', 'Rivals of Aether'],
-				['Annat', 'Other']
-			)
-		},
-		{
-			key: 'games_wanted_other',
-			type: 'text',
-			label: { sv: 'Vilka då? Skriv fritt:', en: 'Which ones? Write freely:' },
-			placeholder: { sv: 'T.ex. Tetris, Rocket League...', en: 'E.g. Tetris, Rocket League...' },
-			showIf: { key: 'games_wanted', values: ['Annat'] }
-		},
-		{
 			key: 'blockers',
 			type: 'multi',
 			label: {
