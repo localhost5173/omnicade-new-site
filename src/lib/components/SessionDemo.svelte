@@ -2,6 +2,10 @@
 	import { tiers, topups } from '$lib/data';
 	import type { Tier, Topup } from '$lib/data';
 	import { getLocale, strings } from '$lib/i18n';
+	import type { DemoMsg } from '$lib/cabinet/tour';
+
+	// kiosk: just the screen, full-bleed -- what the 3D cabinet's iframe shows
+	let { kiosk = false }: { kiosk?: boolean } = $props();
 
 	// The cabinet's session flow, shrunk to demo speed:
 	// attract → game → tiers → pay → countdown → running → extend/over.
@@ -58,6 +62,37 @@
 		phase = PHASE.OVER;
 	}
 
+	// Remote control for the 3D cabinet's step-by-step tour: in kiosk mode the
+	// parent page can set the phase and move a highlight over the lists in time
+	// with the joystick on the model. While driven, the clock still ticks the
+	// countdown and session time down, but never changes phase on its own.
+	let driven = $state(false);
+	let cursor = $state(-1);
+
+	$effect(() => {
+		if (!kiosk) return;
+		const onMessage = (e: MessageEvent<DemoMsg>) => {
+			if (e.origin !== location.origin || e.data?.type !== 'omnicade-demo') return;
+			const d = e.data;
+			if (d.release) {
+				driven = false;
+				cursor = -1;
+				reset();
+				return;
+			}
+			driven = true;
+			if (d.game !== undefined) game = GAMES[d.game];
+			if (d.tier !== undefined) chosen = tiers[d.tier];
+			if (d.remaining !== undefined) remaining = d.remaining;
+			if (d.count !== undefined) count = d.count;
+			if (d.grace !== undefined) grace = d.grace;
+			cursor = d.cursor ?? -1;
+			if (d.phase) phase = d.phase;
+		};
+		addEventListener('message', onMessage);
+		return () => removeEventListener('message', onMessage);
+	});
+
 	function reset() {
 		phase = PHASE.ATTRACT;
 		chosen = null;
@@ -69,6 +104,12 @@
 
 	$effect(() => {
 		const tick = setInterval(() => {
+			if (driven) {
+				if (phase === PHASE.COUNTDOWN && count > 0) count -= 1;
+				else if (phase === PHASE.RUNNING && remaining > 0) remaining -= 1;
+				else if (phase === PHASE.EXTEND && grace > 0) grace -= 1;
+				return;
+			}
 			if (phase === PHASE.PAY) {
 				// like the cabinet's paymentBypass: same flow, auto-approve
 				phase = PHASE.COUNTDOWN;
@@ -99,7 +140,7 @@
 	});
 
 	$effect(() => {
-		if (phase === PHASE.OVER) {
+		if (phase === PHASE.OVER && !driven) {
 			const t = setTimeout(reset, 6000);
 			return () => clearTimeout(t);
 		}
@@ -112,13 +153,15 @@
 	const ui = strings[getLocale()];
 </script>
 
-<div class="demo card" aria-label="Interactive session demo">
-	<div class="chrome">
-		<span class="dot"></span>
-		<span class="dot"></span>
-		<span class="dot"></span>
-		<span class="title">{ui.demo.chromeTitle}</span>
-	</div>
+<div class="demo" class:card={!kiosk} class:kiosk aria-label="Interactive session demo">
+	{#if !kiosk}
+		<div class="chrome">
+			<span class="dot"></span>
+			<span class="dot"></span>
+			<span class="dot"></span>
+			<span class="title">{ui.demo.chromeTitle}</span>
+		</div>
+	{/if}
 
 	<div class="screen" class:low={lowTime}>
 		{#if phase === PHASE.ATTRACT}
@@ -131,8 +174,8 @@
 			<div class="pane">
 				<p class="k">{ui.demo.pickGame}</p>
 				<div class="gamegrid">
-					{#each GAMES as g (g)}
-						<button class="tier" onclick={() => pickGame(g)}>
+					{#each GAMES as g, i (g)}
+						<button class="tier" class:focus={cursor === i} onclick={() => pickGame(g)}>
 							<strong>{g}</strong>
 						</button>
 					{/each}
@@ -142,8 +185,8 @@
 			<div class="pane">
 				<p class="k">{ui.demo.pickTime}</p>
 				<div class="tiergrid">
-					{#each tiers as t (t.minutes)}
-						<button class="tier" onclick={() => pickTier(t)}>
+					{#each tiers as t, i (t.minutes)}
+						<button class="tier" class:focus={cursor === i} onclick={() => pickTier(t)}>
 							{#if t.badge}<span class="badge {t.badgeClass}">{t.badge}</span>{/if}
 							<strong>{t.minutes} MIN</strong>
 							<span class="p">{t.price} {t.currency}</span>
@@ -185,8 +228,8 @@
 			<div class="pane">
 				<p class="k danger">{ui.demo.paused}</p>
 				<div class="tiergrid small">
-					{#each topups as t (t.minutes)}
-						<button class="tier" onclick={() => extend(t)}>
+					{#each topups as t, i (t.minutes)}
+						<button class="tier" class:focus={cursor === i} onclick={() => extend(t)}>
 							<strong>+{t.minutes} MIN</strong>
 							<span class="p">{t.price} {t.currency}</span>
 						</button>
@@ -205,10 +248,12 @@
 		<div class="scan"></div>
 	</div>
 
-	<div class="foot">
-		<span class="chip gold">{ui.demo.phases[phase.toUpperCase() as keyof typeof ui.demo.phases]}</span>
-		<button class="reset" onclick={reset}>{ui.demo.restart}</button>
-	</div>
+	{#if !kiosk}
+		<div class="foot">
+			<span class="chip gold">{ui.demo.phases[phase.toUpperCase() as keyof typeof ui.demo.phases]}</span>
+			<button class="reset" onclick={reset}>{ui.demo.restart}</button>
+		</div>
+	{/if}
 </div>
 
 <style>
@@ -217,6 +262,20 @@
 		margin: 0 auto;
 		padding: 14px;
 		background: linear-gradient(180deg, #14141f, var(--panel));
+	}
+
+	.demo.kiosk {
+		max-width: none;
+		height: 100vh;
+		padding: 0;
+		background: none;
+	}
+
+	.kiosk .screen {
+		aspect-ratio: auto;
+		height: 100%;
+		border: none;
+		border-radius: 0;
 	}
 
 	.chrome {
@@ -395,7 +454,8 @@
 			box-shadow 0.15s ease;
 	}
 
-	.tier:hover {
+	.tier:hover,
+	.tier.focus {
 		border-color: var(--accent);
 		transform: translateY(-2px);
 		box-shadow: 0 8px 24px rgba(255, 204, 0, 0.14);

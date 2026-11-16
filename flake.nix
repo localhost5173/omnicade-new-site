@@ -39,10 +39,11 @@
       pnpmDeps = pkgs.fetchPnpmDeps {
         inherit (finalAttrs) pname version src;
         fetcherVersion = 4;
-        # PR note: bumped for adapter-node + the player pages + geoip-lite.
+        # PR note: bumped for adapter-node + the player pages + geoip-lite,
+        # then three.js for the 3D cabinet.
         # When this hash goes stale, paste the `got:` from the build error
         # here.
-        hash = "sha256-YdYW8UzvNezi+aLhkYXjbHlA1B0RNmrVqXub1roXNY8=";
+        hash = "sha256-rF8ec35dq21K2bopdfLjOSjX7N1WYuznU98PfcZ7k7U=";
       };
 
       buildPhase = ''

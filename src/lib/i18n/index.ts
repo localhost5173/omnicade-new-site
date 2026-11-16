@@ -40,6 +40,10 @@ export interface Strings {
 		lede: string;
 		steps: SessionStep[];
 	};
+	tour: {
+		close: string;
+		step: string;
+	};
 	demo: {
 		chromeTitle: string;
 		attractPrompt: string;
@@ -127,12 +131,12 @@ const sv: Strings = {
 			{
 				title: 'Tiden slut? Utöka.',
 				body: 'Vid noll fryser spelet mitt i bilden och ett lägg-till-tid-kort visas. Välj mer tid så fortsätter du exakt där du stod.'
-			},
-			{
-				title: 'Gå tryggt därifrån',
-				body: 'Lämna du tidigt sparas resten av tiden på ditt kort. Gå upp till vilken Omnicade som helst, dra, och fortsätt.'
 			}
 		]
+	},
+	tour: {
+		close: 'Stäng',
+		step: 'Steg'
 	},
 	demo: {
 		chromeTitle: 'OMNICADE · LIVE-DEMO',
@@ -141,7 +145,7 @@ const sv: Strings = {
 		pickGame: 'VÄLJ SPEL',
 		pickTime: 'VÄLJ TID',
 		tapCard: 'DRA KORTET',
-		payHint: "väntar på betalservern… (godkänner automatiskt, som maskinens testläge)",
+		payHint: 'väntar på betalning…',
 		nowPlaying: 'SPELAR NU',
 		sessionTime: 'SESSIONSTID',
 		runningHint: 'den riktiga maskinen låter den här timern sväva över det levande spelet, i hörnet',
@@ -243,12 +247,12 @@ const en: Strings = {
 			{
 				title: 'Run out? Extend.',
 				body: 'At zero the game freezes mid-frame and an add-time card appears over it. Choose more time and you resume exactly where you stood.'
-			},
-			{
-				title: 'Walk away safe',
-				body: 'Leave early and your remaining time is saved to your card. Walk up to any Omnicade, tap, and continue.'
 			}
 		]
+	},
+	tour: {
+		close: 'Close',
+		step: 'Step'
 	},
 	demo: {
 		chromeTitle: 'OMNICADE · LIVE DEMO',
@@ -257,7 +261,7 @@ const en: Strings = {
 		pickGame: 'PICK YOUR GAME',
 		pickTime: 'PICK YOUR TIME',
 		tapCard: 'TAP CARD',
-		payHint: "waiting for the payment server… (auto-approves, like the cabinet's test mode)",
+		payHint: 'waiting for payment…',
 		nowPlaying: 'NOW PLAYING',
 		sessionTime: 'SESSION TIME',
 		runningHint: 'the real cabinet floats this timer over the live game, in the corner',
