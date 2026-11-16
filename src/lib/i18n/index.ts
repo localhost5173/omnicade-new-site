@@ -52,15 +52,13 @@ export interface Strings {
 		pickTime: string;
 		tapCard: string;
 		payHint: string;
-		nowPlaying: string;
 		sessionTime: string;
-		runningHint: string;
 		lowTime: string;
 		paused: string;
 		extendHint: (grace: number) => string;
 		walkAway: string;
 		over: string;
-		timeSaved: string;
+		thanks: string;
 		overHint: string;
 		restart: string;
 		phases: Record<'ATTRACT' | 'GAME' | 'TIERS' | 'PAY' | 'COUNTDOWN' | 'RUNNING' | 'EXTEND' | 'OVER', string>;
@@ -89,7 +87,7 @@ export interface Strings {
 const sv: Strings = {
 	htmlLang: 'sv',
 	title: 'Omnicade: Arkadmaskinen som kör Steam',
-	ogDescription: 'Riktiga Steam-spel bakom en enda lysande skärm. Kortbetalning, sparade sessioner, dra och spela.',
+	ogDescription: 'Riktiga Steam-spel bakom en enda lysande skärm. Kortbetalning, välj tid, dra och spela.',
 	hero: {
 		eyebrow: 'Arkadmaskinsföretaget',
 		headlineTop: 'RIKTIGA STEAM-SPEL.',
@@ -146,16 +144,14 @@ const sv: Strings = {
 		pickTime: 'VÄLJ TID',
 		tapCard: 'DRA KORTET',
 		payHint: 'väntar på betalning…',
-		nowPlaying: 'SPELAR NU',
 		sessionTime: 'SESSIONSTID',
-		runningHint: 'den riktiga maskinen låter den här timern sväva över det levande spelet, i hörnet',
 		lowTime: '⚠ LÅG TID · DRA KORTET FÖR MER',
 		paused: 'SPEL PAUSAT, MITT I BILDEN',
-		extendHint: (grace) => `erbjudandet gäller i <b>${grace}s</b> till · inget svar? tiden är <b>sparad på ditt kort</b>`,
-		walkAway: 'gå därifrån (spara tiden)',
+		extendHint: (grace) => `erbjudandet gäller i <b>${grace}s</b> till · inget svar? då <b>avslutas sessionen</b>`,
+		walkAway: 'avsluta sessionen',
 		over: 'SESSIONEN SLUT',
-		timeSaved: 'TID SPARAD ✓',
-		overHint: 'din resterande tid ligger på kortet, dra på valfri Omnicade för att fortsätta',
+		thanks: 'TACK FÖR SPELET',
+		overHint: 'dra kortet igen när du vill spela mer',
 		restart: '↺ starta om demon',
 		phases: {
 			ATTRACT: 'ATTRAKT',
@@ -205,7 +201,7 @@ const sv: Strings = {
 const en: Strings = {
 	htmlLang: 'en',
 	title: 'Omnicade: The Steam arcade machine',
-	ogDescription: 'Real Steam games behind one glowing screen. Card payments, saved sessions, tap and play.',
+	ogDescription: 'Real Steam games behind one glowing screen. Card payments, pick your time, tap and play.',
 	hero: {
 		eyebrow: 'The arcade machine company',
 		headlineTop: 'REAL STEAM GAMES.',
@@ -262,16 +258,14 @@ const en: Strings = {
 		pickTime: 'PICK YOUR TIME',
 		tapCard: 'TAP CARD',
 		payHint: 'waiting for payment…',
-		nowPlaying: 'NOW PLAYING',
 		sessionTime: 'SESSION TIME',
-		runningHint: 'the real cabinet floats this timer over the live game, in the corner',
 		lowTime: '⚠ LOW TIME · TAP CARD TO ADD MORE',
 		paused: 'GAME PAUSED, MID-FRAME',
-		extendHint: (grace) => `the offer stands for <b>${grace}s</b> · nothing? your time is <b>saved to your card</b>`,
-		walkAway: 'walk away (save time)',
+		extendHint: (grace) => `the offer stands for <b>${grace}s</b> · nothing? the <b>session ends</b>`,
+		walkAway: 'end session',
 		over: 'SESSION OVER',
-		timeSaved: 'TIME SAVED ✓',
-		overHint: 'your remaining time is on your card, tap any Omnicade to continue',
+		thanks: 'THANKS FOR PLAYING',
+		overHint: 'tap your card again whenever you want to play more',
 		restart: '↺ restart demo',
 		phases: {
 			ATTRACT: 'ATTRACT',
