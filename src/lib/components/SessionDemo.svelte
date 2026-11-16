@@ -241,9 +241,6 @@
 					<span class="lbl">{ui.demo.sessionTime}</span>
 					<div class="bar"><span style="width: {pct * 100}%"></span></div>
 				</div>
-				{#if lowTime}
-					<p class="toast">{ui.demo.lowTime}</p>
-				{/if}
 			</div>
 		{:else if phase === PHASE.EXTEND}
 			<div class="pane">
@@ -886,20 +883,6 @@
 		background: linear-gradient(90deg, var(--accent), var(--yellow));
 		box-shadow: 0 0 12px rgba(255, 204, 0, 0.5);
 		transition: width 1s linear;
-	}
-
-	.toast {
-		position: absolute;
-		left: 10px;
-		bottom: 14px;
-		padding: 6px 8px;
-		border-radius: 6px;
-		background: rgba(7, 7, 12, 0.8);
-		font-family: var(--pixel);
-		font-size: 7px;
-		letter-spacing: 0.1em;
-		color: var(--warn);
-		animation: blink 0.9s steps(1) infinite;
 	}
 
 	.walk {

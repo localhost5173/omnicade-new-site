@@ -436,6 +436,7 @@ export function createTour({ pivot, cabinet, send }: Ctx): Tour {
 	};
 	const controlsShot = deckC.clone().lerp(screenC, 0.45).add(new THREE.Vector3(0, -8, 0));
 	const readerShot = readerPos.clone().lerp(screenC, 0.15).add(new THREE.Vector3(0, -6, 0));
+	const extendShot = controlsShot.clone().lerp(readerPos, 0.35);
 
 	// --- the steps, in the order of strings.session.steps. Read together they
 	// are one unbroken session on the screen: every step plays once, slowly
@@ -505,18 +506,23 @@ export function createTour({ pivot, cabinet, send }: Ctx): Tour {
 			shot: at(readerShot, [0.38, 0.16, 1], 165, readerPos.clone().lerp(screenC, 0.05))
 		},
 		{
-			// run out? extend: pick +10, back in the game
-			duration: 8.5,
+			// run out? extend: pick +10 with the stick, pay for it with a tap
+			// of the card, back in the game where it froze
+			duration: 12,
 			events: [
 				[0, { phase: 'extend', cursor: 0, grace: 10, remaining: 0, ...PICKED }],
 				[2.4, { phase: 'extend', cursor: 1 }],
-				[4.4, { phase: 'running', cursor: -1, remaining: 10 }]
+				[4.3, { phase: 'pay', cursor: -1 }],
+				[7.25, { phase: 'running', remaining: 10 }]
 			],
 			run: (t) => {
 				tiltStick(hit(t, 2.4), 0);
-				press(A, hit(t, 4.35, 0.3));
+				press(A, hit(t, 4.25, 0.3));
+				const touching = tapCard(t, 6.5);
+				led.emissive.copy(touching ? ledOk : ledIdle);
 			},
-			shot: at(controlsShot, [-0.32, 0.36, 1], 215)
+			// wide enough for the stick, the screen and the reader at once
+			shot: at(extendShot, [0.22, 0.34, 1], 250, readerPos.clone().lerp(screenC, 0.4))
 		}
 	];
 

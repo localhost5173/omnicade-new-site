@@ -53,7 +53,6 @@ export interface Strings {
 		tapCard: string;
 		payHint: string;
 		sessionTime: string;
-		lowTime: string;
 		paused: string;
 		extendHint: (grace: number) => string;
 		walkAway: string;
@@ -128,7 +127,7 @@ const sv: Strings = {
 			},
 			{
 				title: 'Tiden slut? Utöka.',
-				body: 'Vid noll fryser spelet mitt i bilden och ett lägg-till-tid-kort visas. Välj mer tid så fortsätter du exakt där du stod.'
+				body: 'Vid noll fryser spelet mitt i bilden och ett lägg-till-tid-kort visas. Välj mer tid, dra kortet, så fortsätter du exakt där du stod.'
 			}
 		]
 	},
@@ -145,7 +144,6 @@ const sv: Strings = {
 		tapCard: 'DRA KORTET',
 		payHint: 'väntar på betalning…',
 		sessionTime: 'SESSIONSTID',
-		lowTime: '⚠ LÅG TID · DRA KORTET FÖR MER',
 		paused: 'SPEL PAUSAT, MITT I BILDEN',
 		extendHint: (grace) => `erbjudandet gäller i <b>${grace}s</b> till · inget svar? då <b>avslutas sessionen</b>`,
 		walkAway: 'avsluta sessionen',
@@ -242,7 +240,7 @@ const en: Strings = {
 			},
 			{
 				title: 'Run out? Extend.',
-				body: 'At zero the game freezes mid-frame and an add-time card appears over it. Choose more time and you resume exactly where you stood.'
+				body: 'At zero the game freezes mid-frame and an add-time card appears over it. Choose more time, tap your card, and you resume exactly where you stood.'
 			}
 		]
 	},
@@ -259,7 +257,6 @@ const en: Strings = {
 		tapCard: 'TAP CARD',
 		payHint: 'waiting for payment…',
 		sessionTime: 'SESSION TIME',
-		lowTime: '⚠ LOW TIME · TAP CARD TO ADD MORE',
 		paused: 'GAME PAUSED, MID-FRAME',
 		extendHint: (grace) => `the offer stands for <b>${grace}s</b> · nothing? the <b>session ends</b>`,
 		walkAway: 'end session',
