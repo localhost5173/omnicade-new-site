@@ -1,8 +1,19 @@
 <script lang="ts">
-	import SessionDemo from './SessionDemo.svelte';
+	import Cabinet3D from './Cabinet3D.svelte';
 	import { getLocale, strings } from '$lib/i18n';
 
 	const t = strings[getLocale()];
+
+	// the CTA opens the 3D step-by-step tour once the cabinet is up; without
+	// WebGL it stays a plain jump to the session section
+	let touring = $state(false);
+	let ready = $state(false);
+
+	function openTour(e: MouseEvent) {
+		if (!ready) return;
+		e.preventDefault();
+		touring = true;
+	}
 </script>
 
 <section class="hero" id="top">
@@ -21,7 +32,7 @@
 			</p>
 
 			<div class="actions">
-				<a class="btn btn-gold" href="#session">{t.hero.cta}</a>
+				<a class="btn btn-gold" href="#session" onclick={openTour}>{t.hero.cta}</a>
 			</div>
 
 			<dl class="stats">
@@ -39,7 +50,8 @@
 		</div>
 
 		<div class="visual">
-			<SessionDemo />
+			<!-- the session demo runs on the cabinet's own screen (/screen) -->
+			<Cabinet3D bind:touring bind:ready />
 		</div>
 	</div>
 </section>

@@ -40,6 +40,10 @@ export interface Strings {
 		lede: string;
 		steps: SessionStep[];
 	};
+	tour: {
+		close: string;
+		step: string;
+	};
 	demo: {
 		chromeTitle: string;
 		attractPrompt: string;
@@ -48,15 +52,12 @@ export interface Strings {
 		pickTime: string;
 		tapCard: string;
 		payHint: string;
-		nowPlaying: string;
 		sessionTime: string;
-		runningHint: string;
-		lowTime: string;
 		paused: string;
 		extendHint: (grace: number) => string;
 		walkAway: string;
 		over: string;
-		timeSaved: string;
+		thanks: string;
 		overHint: string;
 		restart: string;
 		phases: Record<'ATTRACT' | 'GAME' | 'TIERS' | 'PAY' | 'COUNTDOWN' | 'RUNNING' | 'EXTEND' | 'OVER', string>;
@@ -85,7 +86,7 @@ export interface Strings {
 const sv: Strings = {
 	htmlLang: 'sv',
 	title: 'Omnicade: Arkadmaskinen som kör Steam',
-	ogDescription: 'Riktiga Steam-spel bakom en enda lysande skärm. Kortbetalning, sparade sessioner, dra och spela.',
+	ogDescription: 'Riktiga Steam-spel bakom en enda lysande skärm. Kortbetalning, välj tid, dra och spela.',
 	hero: {
 		eyebrow: 'Arkadmaskinsföretaget',
 		headlineTop: 'RIKTIGA STEAM-SPEL.',
@@ -126,13 +127,13 @@ const sv: Strings = {
 			},
 			{
 				title: 'Tiden slut? Utöka.',
-				body: 'Vid noll fryser spelet mitt i bilden och ett lägg-till-tid-kort visas. Välj mer tid så fortsätter du exakt där du stod.'
-			},
-			{
-				title: 'Gå tryggt därifrån',
-				body: 'Lämna du tidigt sparas resten av tiden på ditt kort. Gå upp till vilken Omnicade som helst, dra, och fortsätt.'
+				body: 'Vid noll fryser spelet mitt i bilden och ett lägg-till-tid-kort visas. Välj mer tid, dra kortet, så fortsätter du exakt där du stod.'
 			}
 		]
+	},
+	tour: {
+		close: 'Stäng',
+		step: 'Steg'
 	},
 	demo: {
 		chromeTitle: 'OMNICADE · LIVE-DEMO',
@@ -141,17 +142,14 @@ const sv: Strings = {
 		pickGame: 'VÄLJ SPEL',
 		pickTime: 'VÄLJ TID',
 		tapCard: 'DRA KORTET',
-		payHint: "väntar på betalservern… (godkänner automatiskt, som maskinens testläge)",
-		nowPlaying: 'SPELAR NU',
+		payHint: 'väntar på betalning…',
 		sessionTime: 'SESSIONSTID',
-		runningHint: 'den riktiga maskinen låter den här timern sväva över det levande spelet, i hörnet',
-		lowTime: '⚠ LÅG TID · DRA KORTET FÖR MER',
 		paused: 'SPEL PAUSAT, MITT I BILDEN',
-		extendHint: (grace) => `erbjudandet gäller i <b>${grace}s</b> till · inget svar? tiden är <b>sparad på ditt kort</b>`,
-		walkAway: 'gå därifrån (spara tiden)',
+		extendHint: (grace) => `erbjudandet gäller i <b>${grace}s</b> till · inget svar? då <b>avslutas sessionen</b>`,
+		walkAway: 'avsluta sessionen',
 		over: 'SESSIONEN SLUT',
-		timeSaved: 'TID SPARAD ✓',
-		overHint: 'din resterande tid ligger på kortet, dra på valfri Omnicade för att fortsätta',
+		thanks: 'TACK FÖR SPELET',
+		overHint: 'dra kortet igen när du vill spela mer',
 		restart: '↺ starta om demon',
 		phases: {
 			ATTRACT: 'ATTRAKT',
@@ -201,7 +199,7 @@ const sv: Strings = {
 const en: Strings = {
 	htmlLang: 'en',
 	title: 'Omnicade: The Steam arcade machine',
-	ogDescription: 'Real Steam games behind one glowing screen. Card payments, saved sessions, tap and play.',
+	ogDescription: 'Real Steam games behind one glowing screen. Card payments, pick your time, tap and play.',
 	hero: {
 		eyebrow: 'The arcade machine company',
 		headlineTop: 'REAL STEAM GAMES.',
@@ -242,13 +240,13 @@ const en: Strings = {
 			},
 			{
 				title: 'Run out? Extend.',
-				body: 'At zero the game freezes mid-frame and an add-time card appears over it. Choose more time and you resume exactly where you stood.'
-			},
-			{
-				title: 'Walk away safe',
-				body: 'Leave early and your remaining time is saved to your card. Walk up to any Omnicade, tap, and continue.'
+				body: 'At zero the game freezes mid-frame and an add-time card appears over it. Choose more time, tap your card, and you resume exactly where you stood.'
 			}
 		]
+	},
+	tour: {
+		close: 'Close',
+		step: 'Step'
 	},
 	demo: {
 		chromeTitle: 'OMNICADE · LIVE DEMO',
@@ -257,17 +255,14 @@ const en: Strings = {
 		pickGame: 'PICK YOUR GAME',
 		pickTime: 'PICK YOUR TIME',
 		tapCard: 'TAP CARD',
-		payHint: "waiting for the payment server… (auto-approves, like the cabinet's test mode)",
-		nowPlaying: 'NOW PLAYING',
+		payHint: 'waiting for payment…',
 		sessionTime: 'SESSION TIME',
-		runningHint: 'the real cabinet floats this timer over the live game, in the corner',
-		lowTime: '⚠ LOW TIME · TAP CARD TO ADD MORE',
 		paused: 'GAME PAUSED, MID-FRAME',
-		extendHint: (grace) => `the offer stands for <b>${grace}s</b> · nothing? your time is <b>saved to your card</b>`,
-		walkAway: 'walk away (save time)',
+		extendHint: (grace) => `the offer stands for <b>${grace}s</b> · nothing? the <b>session ends</b>`,
+		walkAway: 'end session',
 		over: 'SESSION OVER',
-		timeSaved: 'TIME SAVED ✓',
-		overHint: 'your remaining time is on your card, tap any Omnicade to continue',
+		thanks: 'THANKS FOR PLAYING',
+		overHint: 'tap your card again whenever you want to play more',
 		restart: '↺ restart demo',
 		phases: {
 			ATTRACT: 'ATTRACT',
